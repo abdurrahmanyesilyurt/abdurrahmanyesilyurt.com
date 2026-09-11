@@ -20,9 +20,11 @@ const s = ui[lang];
           <dt class="pt-2.5 font-mono text-xs tracking-[0.1em] text-ink-2 uppercase print:pt-1">{t(group.name, lang)}</dt>
           <dd>
             <ul class="slash-list flex flex-wrap gap-x-[0.3em] font-serif text-2xl leading-snug sm:text-[1.75rem] print:text-base">
-              {group.items.map((item) => (
-                <li class="whitespace-nowrap">{t(item, lang)}</li>
-              ))}
+              {group.items.map((item) => {
+                const label = t(item, lang);
+                // Kısa öğeler bölünmesin; uzunlar dar ekranda taşmasın diye satır kırabilir
+                return <li class:list={[label.length <= 24 && 'whitespace-nowrap']}>{label}</li>;
+              })}
             </ul>
           </dd>
         </div>
