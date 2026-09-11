@@ -5,7 +5,12 @@
  * Dile göre değişiyorsa { tr, en } olarak yaz: role: { tr: 'Stajyer', en: 'Intern' }
  * Tarihler 'YYYY-AA' biçiminde:                start: '2024-08'
  */
+import type { ImageMetadata } from 'astro';
 import type { Lang } from '../i18n/ui';
+import ecoyazilimIcon from '../assets/projects/ecoyazilim.png';
+import ekonazKarbonIcon from '../assets/projects/ekonaz-karbon.png';
+import nakliyekoopIcon from '../assets/projects/nakliyekoop.png';
+import sayveraIcon from '../assets/projects/sayveraglobal.png';
 
 export type Localized<T = string> = T | { tr: T; en: T };
 
@@ -21,12 +26,30 @@ export interface Experience {
   highlights?: Localized<string[]>;
 }
 
+export type ProjectLinkType = 'web' | 'google-play' | 'app-store';
+
+export interface ProjectLink {
+  type: ProjectLinkType;
+  url: string;
+  /** Varsayılan etiketin yerine, örn. { tr: 'Karbon paneli', en: 'Carbon dashboard' } */
+  label?: Localized;
+}
+
 export interface Project {
   name: string;
+  /** Kartın üstündeki kısa alan adı, örn. "Lojistik" */
+  category: Localized;
+  /** Örn. ['Web', 'iOS', 'Android'] — marka adları olduğu için çevrilmez */
+  platforms?: string[];
   description: Localized;
+  /** Projede benim üstlendiğim kısım */
+  role?: Localized;
   tech: string[];
-  url?: string;
-  repo?: string;
+  links?: ProjectLink[];
+  /** QR kodun açacağı adres ve altındaki kısa yazı; boşsa QR gösterilmez */
+  qr?: { url: string; label: Localized };
+  /** src/assets/projects altından import edilen ikon */
+  icon?: ImageMetadata;
 }
 
 export interface SkillGroup {
@@ -197,15 +220,91 @@ export const cv: CV = {
     },
   ],
 
-  // Proje eklediğinde "Projeler" bölümü otomatik görünür. Örnek:
-  // {
-  //   name: 'Proje Adı',
-  //   description: { tr: 'Kısa açıklama', en: 'Short description' },
-  //   tech: ['ASP.NET Core', 'PostgreSQL', 'Next.js'],
-  //   url: 'https://...',
-  //   repo: 'https://github.com/abdurrahmanyesilyurt/...',
-  // },
-  projects: [],
+  // Sadece herkese açık adresler: API, yönetim paneli ve test ortamı linkleri buraya girmez.
+  projects: [
+    {
+      name: 'EcoYazılım',
+      category: { tr: 'Kurumsal yönetim', en: 'Business management' },
+      platforms: ['Web', 'iOS', 'Android'],
+      description: {
+        tr: 'Çevre ve iş güvenliği danışmanlık firmaları ile müşterileri için yönetim platformu: teklif ve sözleşme onayları, periyodik kontrol raporları, İSG ve çevre danışmanlığı, akademi, belge takibi ve karbon raporu yönetimi. Saha ekipleri için mobil uygulaması var.',
+        en: 'Management platform for environmental and occupational-safety consultancies and their client companies: quote and contract approvals, periodic inspection reports, OHS and environmental consulting, an academy, document tracking and carbon report management — plus a mobile app for field teams.',
+      },
+      role: {
+        tr: 'Ekonaz ürünlerinin ortak ASP.NET Core 8 API’si (SignalR bildirimleri, QuestPDF ile QR doğrulamalı PDF raporlar, firma bazlı veri ayrımı ve yetkilendirme) ve Next.js web uygulaması; Expo mobil uygulamasında ekip içinde geliştirme; Docker ve GitHub Actions ile yayın.',
+        en: 'The shared ASP.NET Core 8 API behind the Ekonaz products (SignalR notifications, QR-verified PDF reports with QuestPDF, per-company data isolation and permissions) and the Next.js web app; team development on the Expo mobile app; releases with Docker and GitHub Actions.',
+      },
+      tech: ['ASP.NET Core 8', 'PostgreSQL', 'SignalR', 'QuestPDF', 'Next.js 15', 'React Native (Expo)', 'Docker', 'GitHub Actions'],
+      links: [
+        { type: 'web', url: 'https://www.ecoyazilim.com' },
+        { type: 'app-store', url: 'https://apps.apple.com/tr/app/ecoyaz%C4%B1l%C4%B1m/id6780693355' },
+        { type: 'google-play', url: 'https://play.google.com/store/apps/details?id=com.ekonaz.dijital' },
+      ],
+      qr: { url: 'https://www.ecoyazilim.com/indir', label: { tr: 'Uygulamayı indir', en: 'Get the app' } },
+      icon: ecoyazilimIcon,
+    },
+    {
+      name: 'Ekonaz Karbon',
+      category: { tr: 'Sürdürülebilirlik', en: 'Sustainability' },
+      platforms: ['Web', 'iOS', 'Android'],
+      description: {
+        tr: 'Şirketler için karbon ayak izi hesaplama ve raporlama portalı: tesis ve dönem bazlı faaliyet verisi, Kapsam 1-2-3 emisyon hesabı, onaylı PDF raporlar ve grafikli gösterge paneli. ISO 14064 ve GHG Protocol’e dayanır.',
+        en: 'Corporate carbon footprint calculation and reporting portal: activity data per facility and period, Scope 1–3 emission calculations, approved PDF reports and a dashboard with charts, based on ISO 14064 and the GHG Protocol.',
+      },
+      role: {
+        tr: 'Formül tabanlı emisyon hesaplama ve rapor onay akışının backend’i (ASP.NET Core 8), Next.js müşteri portalı ve Expo ile geliştirilen iOS/Android uygulaması.',
+        en: 'The backend for formula-based emission calculations and the report approval flow (ASP.NET Core 8), the Next.js customer portal and the iOS/Android app built with Expo.',
+      },
+      tech: ['ASP.NET Core 8', 'PostgreSQL', 'NCalc', 'QuestPDF', 'Next.js 15', 'React Native (Expo)', 'TanStack Query', 'Recharts'],
+      links: [
+        { type: 'web', url: 'https://www.ekocarbon.com.tr' },
+        { type: 'app-store', url: 'https://apps.apple.com/tr/app/ekonaz-karbon/id6768579586' },
+        { type: 'google-play', url: 'https://play.google.com/store/apps/details?id=com.ekonaz.karbon' },
+      ],
+      qr: { url: 'https://www.ekocarbon.com.tr/indir', label: { tr: 'Uygulamayı indir', en: 'Get the app' } },
+      icon: ekonazKarbonIcon,
+    },
+    {
+      name: 'Sayvera Global',
+      category: { tr: 'E-ticaret · Doğrudan satış', en: 'E-commerce · Direct selling' },
+      platforms: ['Web'],
+      description: {
+        tr: 'Doğal sağlık ve bakım ürünleri için doğrudan satış e-ticaret platformu: üyelik ve referans sistemi, ekip ağacı ve aylık kazanç hesabı, satıcı pazaryeri ve kapsamlı yönetim paneli.',
+        en: 'Direct-selling e-commerce platform for natural health and care products: membership and referrals, a team tree with monthly earnings, a seller marketplace and an extensive admin panel.',
+      },
+      role: {
+        tr: 'ASP.NET Core 8 backend’in büyük kısmı: katmanlı mimari, komisyon motoru (binary ağaç, kariyer seviyeleri), PayTR ödeme, e-fatura ve kargo entegrasyonları, zamanlanmış işler ve GitHub Actions ile yayın.',
+        en: 'Most of the ASP.NET Core 8 backend: layered architecture, the commission engine (binary tree, career ranks), PayTR payments, e-invoice and shipping integrations, scheduled jobs and GitHub Actions deployment.',
+      },
+      tech: ['ASP.NET Core 8', 'EF Core', 'PostgreSQL', 'Identity + JWT', 'AWS S3', 'PayTR', 'GitHub Actions'],
+      links: [{ type: 'web', url: 'https://www.sayveraglobal.com' }],
+      qr: { url: 'https://www.sayveraglobal.com', label: { tr: 'Siteyi aç', en: 'Open site' } },
+      icon: sayveraIcon,
+    },
+    {
+      name: 'NakliyeKoop',
+      category: { tr: 'Lojistik', en: 'Logistics' },
+      platforms: ['Web', 'Android'],
+      description: {
+        tr: 'Nakliye kooperatifleri için araç ve şoför sıra yönetimi, sefer takibi ve yük panosu. Yöneticiler sırayı ve seferleri yönetir; şoförler sıralarını mobil uygulamadan anlık takip eder.',
+        en: 'Queue and dispatch system for freight cooperatives: vehicle and driver queues, trip tracking and a freight board. Admins run the queue and trips; drivers follow their place in line live from the mobile app.',
+      },
+      role: {
+        tr: 'Flutter mobil uygulama; NestJS backend’in büyük kısmı (JWT, rol bazlı yetki, Socket.IO ile anlık güncellemeler, FCM bildirimleri) ve AWS üzerinde CI/CD ile dağıtım.',
+        en: 'The Flutter mobile app; most of the NestJS backend (JWT, role-based access, real-time updates over Socket.IO, FCM push) and CI/CD deployment on AWS.',
+      },
+      tech: ['Flutter', 'NestJS', 'PostgreSQL', 'Socket.IO', 'Firebase (FCM)', 'Docker', 'AWS Lightsail', 'GitHub Actions'],
+      links: [
+        { type: 'web', url: 'https://www.nakliyekoop.com' },
+        { type: 'google-play', url: 'https://play.google.com/store/apps/details?id=com.nakliyekoop.app' },
+      ],
+      qr: {
+        url: 'https://play.google.com/store/apps/details?id=com.nakliyekoop.app',
+        label: { tr: 'Android uygulaması', en: 'Android app' },
+      },
+      icon: nakliyekoopIcon,
+    },
+  ],
 
   skills: [
     {
@@ -314,6 +413,13 @@ export function t<T>(value: Localized<T>, lang: Lang): T {
     return (value as { tr: T; en: T })[lang];
   }
   return value as T;
+}
+
+/** 'https://www.linkedin.com/in/ye%C5%9F/' → 'linkedin.com/in/yeş' (ekranda ve baskıda gösterilecek hâl) */
+export function displayUrl(url: string): string {
+  return decodeURI(url)
+    .replace(/^https?:\/\/(www\.)?/, '')
+    .replace(/\/$/, '');
 }
 
 const locales: Record<Lang, string> = { tr: 'tr-TR', en: 'en-US' };

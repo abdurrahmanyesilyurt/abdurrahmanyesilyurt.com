@@ -1,5 +1,5 @@
 ---
-import { cv, t } from '../data/cv';
+import { cv, displayUrl, t } from '../data/cv';
 import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -25,6 +25,14 @@ const facts = [
   { label: s.facts.languages, value: spoken },
   ...(cv.militaryService ? [{ label: s.facts.military, value: t(cv.militaryService, lang) }] : []),
 ];
+
+// Sadece baskıda: basılı CV'de iletişim bilgileri en üstte olur
+const printContacts = [
+  cv.links.email,
+  cv.links.github && displayUrl(cv.links.github),
+  cv.links.linkedin && displayUrl(cv.links.linkedin),
+  Astro.site && displayUrl(Astro.site.href),
+].filter((item): item is string => Boolean(item));
 ---
 
 <section id="top" class="pt-14 pb-16 sm:pt-20 lg:pt-28 lg:pb-24 print:pt-0 print:pb-4">
@@ -48,6 +56,10 @@ const facts = [
     <span class="hero-line"><span class="[--d:100ms]">{firstName}</span></span>
     <span class="hero-line"><span class="text-accent italic [--d:220ms]">{lastName}</span></span>
   </h1>
+
+  <ul class="hidden print:mt-3 print:flex print:flex-wrap print:gap-x-4 print:gap-y-0.5 print:text-[10px] print:text-ink-2">
+    {printContacts.map((item) => <li>{item}</li>)}
+  </ul>
 
   <div
     class="mt-12 grid gap-x-10 gap-y-10 border-t border-rule pt-8 lg:mt-16 lg:grid-cols-12 print:mt-4 print:grid-cols-12 print:gap-x-6 print:gap-y-4 print:pt-4"

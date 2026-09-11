@@ -1,0 +1,37 @@
+---
+// Build sırasında SVG olarak üretilen QR kod. Satır içi stil/script yok (CSP uyumlu).
+import { encode } from 'uqr';
+
+interface Props {
+  value: string;
+  label: string;
+  class?: string;
+}
+
+const { value, label, class: className } = Astro.props;
+
+const { data, size } = encode(value, { ecc: 'M', border: 0 });
+const quietZone = 2;
+const box = size + quietZone * 2;
+
+// Yan yana koyu modülleri tek dikdörtgende birleştir: daha küçük bir path
+let path = '';
+data.forEach((row, y) => {
+  for (let x = 0; x < row.length; ) {
+    if (!row[x]) {
+      x++;
+      continue;
+    }
+    let run = 1;
+    while (row[x + run]) run++;
+    path += `M${x + quietZone} ${y + quietZone}h${run}v1h-${run}z`;
+    x += run;
+  }
+});
+---
+
+<!-- Tarayıcıların hepsi ters renkli QR okuyamadığı için temadan bağımsız: açık zemin, koyu modül -->
+<svg viewBox={`0 0 ${box} ${box}`} role="img" aria-label={label} shape-rendering="crispEdges" class={className}>
+  <rect width={box} height={box} fill="#f7f5ef"></rect>
+  <path d={path} fill="#161613"></path>
+</svg>
