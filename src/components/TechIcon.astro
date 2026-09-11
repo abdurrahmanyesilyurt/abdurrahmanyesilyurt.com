@@ -1,0 +1,17 @@
+---
+// Marka renginde daire içinde logo. Build sırasında çizilir; stil özniteliği yok (CSP uyumlu).
+import type { BrandIcon } from '../lib/icons';
+
+interface Props {
+  icon: BrandIcon;
+  class?: string;
+}
+
+const { icon, class: className } = Astro.props;
+---
+
+<svg viewBox="0 0 24 24" aria-hidden="true" class={className}>
+  <!-- İnce kenar: koyu temada siyah logolu daireler zemine karışmasın -->
+  <circle cx="12" cy="12" r="11.5" fill={icon.hex} stroke="currentColor" stroke-opacity="0.18"></circle>
+  <path d={icon.path} fill={icon.glyph} transform="translate(5.4 5.4) scale(0.55)"></path>
+</svg>

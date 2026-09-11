@@ -17,6 +17,7 @@ interface UI {
   present: string;
   expandAll: string;
   collapseAll: string;
+  coreLegend: string;
   facts: { role: string; focus: string; location: string; languages: string; military: string };
   contactCta: string;
   savePdf: string;
@@ -70,6 +71,7 @@ export const ui: Record<Lang, UI> = {
     present: 'Günümüz',
     expandAll: 'Tümünü aç',
     collapseAll: 'Tümünü kapat',
+    coreLegend: 'Ana odak',
     facts: { role: 'Rol', focus: 'Odak', location: 'Konum', languages: 'Diller', military: 'Askerlik' },
     contactCta: 'İletişime geç',
     savePdf: 'PDF olarak kaydet',
@@ -120,6 +122,7 @@ export const ui: Record<Lang, UI> = {
     present: 'Present',
     expandAll: 'Expand all',
     collapseAll: 'Collapse all',
+    coreLegend: 'Core focus',
     facts: { role: 'Role', focus: 'Focus', location: 'Location', languages: 'Languages', military: 'Military service' },
     contactCta: 'Get in touch',
     savePdf: 'Save as PDF',

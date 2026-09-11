@@ -1,6 +1,8 @@
 ---
 import Section from './Section.astro';
-import { cv, t } from '../data/cv';
+import TechIcon from './TechIcon.astro';
+import { cv, t, toSkillItem } from '../data/cv';
+import { brandIcon } from '../lib/icons';
 import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -10,25 +12,74 @@ interface Props {
 
 const { lang, number } = Astro.props;
 const s = ui[lang];
+
+// İlk grup (Backend) iki sütunu kaplayan geniş kart olur
+const groups = cv.skills.map((group, index) => ({
+  name: t(group.name, lang),
+  index: String(index + 1).padStart(2, '0'),
+  wide: index === 0,
+  items: group.items.map((raw) => {
+    const item = toSkillItem(raw);
+    return { label: t(item.label, lang), core: Boolean(item.core), icon: brandIcon(item.icon) };
+  }),
+}));
+
+const hasCore = groups.some((group) => group.items.some((item) => item.core));
 ---
 
 <Section id={s.sections.skills.id} number={number} title={s.sections.skills.label}>
-  <dl class="divide-y divide-rule">
+  {
+    hasCore && (
+      <p
+        slot="header-extra"
+        class="mt-5 flex items-center gap-2 font-mono text-[11px] tracking-[0.12em] text-ink-2 uppercase print:hidden"
+      >
+        <span class="size-3 rounded-full border border-accent bg-accent/15" aria-hidden="true" />
+        {s.coreLegend}
+      </p>
+    )
+  }
+
+  <!-- Baskıda gri "gap" zemini kullanılmaz: sayfa sonunda boş kalan hücre gri blok gibi görünür -->
+  <ul
+    class="grid gap-px overflow-hidden rounded-2xl border border-rule bg-rule md:grid-cols-2 print:grid-cols-2 print:gap-x-6 print:gap-y-0 print:overflow-visible print:rounded-none print:border-0 print:bg-transparent"
+  >
     {
-      cv.skills.map((group) => (
-        <div class="scroll-reveal print-break-avoid grid gap-x-8 gap-y-2 py-6 first:pt-0 sm:grid-cols-[10.5rem_1fr] print:grid-cols-[9rem_1fr] print:py-1.5">
-          <dt class="pt-2.5 font-mono text-xs tracking-[0.1em] text-ink-2 uppercase print:pt-1">{t(group.name, lang)}</dt>
-          <dd>
-            <ul class="slash-list flex flex-wrap gap-x-[0.3em] font-serif text-2xl leading-snug sm:text-[1.75rem] print:text-base">
-              {group.items.map((item) => {
-                const label = t(item, lang);
-                // Kısa öğeler bölünmesin; uzunlar dar ekranda taşmasın diye satır kırabilir
-                return <li class:list={[label.length <= 24 && 'whitespace-nowrap']}>{label}</li>;
-              })}
-            </ul>
-          </dd>
-        </div>
+      groups.map((group) => (
+        <li
+          class:list={[
+            'scroll-reveal print-break-avoid flex flex-col gap-5 bg-paper p-6 sm:p-7 print:gap-1.5 print:border-b print:border-rule print:px-0 print:py-2',
+            group.wide && 'md:col-span-2 print:col-span-2',
+          ]}
+        >
+          <div class="flex items-baseline justify-between gap-4">
+            <h3 class="flex items-baseline gap-3">
+              <span class="font-mono text-[11px] text-ink-3">{group.index}</span>
+              <span class="font-serif text-[1.625rem] leading-none print:text-base">{group.name}</span>
+            </h3>
+            <span class="font-mono text-[11px] text-ink-3" aria-hidden="true">
+              {group.items.length}
+            </span>
+          </div>
+
+          <ul class="flex flex-wrap gap-2 print:gap-x-3 print:gap-y-1">
+            {group.items.map((item) => (
+              <li
+                class:list={[
+                  'inline-flex items-center gap-2 rounded-full border py-1 pr-3.5 text-[14px] leading-6 transition-colors print:border-0 print:bg-transparent print:p-0 print:text-[10px] print:leading-4',
+                  item.icon ? 'pl-1' : 'pl-3.5',
+                  item.core
+                    ? 'border-accent bg-accent/10 font-medium text-ink'
+                    : 'border-rule text-ink-2 hover:border-ink hover:text-ink',
+                ]}
+              >
+                {item.icon && <TechIcon icon={item.icon} class="size-6 shrink-0 print:size-3" />}
+                {item.label}
+              </li>
+            ))}
+          </ul>
+        </li>
       ))
     }
-  </dl>
+  </ul>
 </Section>

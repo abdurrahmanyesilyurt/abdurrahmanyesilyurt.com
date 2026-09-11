@@ -99,13 +99,6 @@ body::before {
   transform: none;
 }
 
-/* Yetenekler: "C# / .NET / ASP.NET Core" gibi dizilen liste */
-.slash-list > li:not(:last-child)::after {
-  content: "/";
-  color: var(--ink-3);
-  padding-left: 0.3em;
-}
-
 /* Blog yazıları: Tailwind Typography renkleri sitenin tonlarına bağlanır */
 .prose-cv {
   --tw-prose-body: var(--ink-2);
