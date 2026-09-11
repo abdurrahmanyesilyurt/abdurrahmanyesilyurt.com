@@ -52,9 +52,18 @@ export interface Project {
   icon?: ImageMetadata;
 }
 
+export interface SkillItem {
+  label: Localized;
+  /** simple-icons kısa adı, örn. 'docker' (https://simpleicons.org); marka logosu gösterilir */
+  icon?: string;
+  /** Ana odak: yeşil çerçeveyle vurgulanır */
+  core?: boolean;
+}
+
 export interface SkillGroup {
   name: Localized;
-  items: Localized[];
+  /** Düz metin ya da { label, icon, core } */
+  items: (Localized | SkillItem)[];
 }
 
 export interface Education {
@@ -306,37 +315,66 @@ export const cv: CV = {
     },
   ],
 
+  // İlk grup geniş kart olarak en üstte görünür. core: true olanlar "ana odak" olarak vurgulanır.
   skills: [
     {
-      name: { tr: 'Diller', en: 'Languages' },
-      items: ['C#', 'TypeScript', 'JavaScript', 'Python', 'SQL', 'Dart'],
-    },
-    {
       name: 'Backend',
-      items: ['ASP.NET Core 8', '.NET 8', 'Web API', 'REST', 'SignalR', 'Entity Framework Core', 'LINQ', 'Node.js'],
+      items: [
+        { label: 'ASP.NET Core 8', icon: 'dotnet', core: true },
+        { label: '.NET 8', icon: 'dotnet', core: true },
+        { label: 'Entity Framework Core', icon: 'dotnet', core: true },
+        { label: 'SignalR', icon: 'dotnet' },
+        { label: 'Node.js', icon: 'nodedotjs' },
+        'Web API',
+        'REST',
+        'LINQ',
+      ],
     },
     {
-      name: 'Frontend',
-      items: ['Next.js 15', 'React', 'TypeScript', 'TanStack Query', 'Tailwind CSS', 'HTML', 'CSS'],
-    },
-    {
-      name: { tr: 'Mobil', en: 'Mobile' },
-      items: ['React Native', 'Expo', 'Flutter'],
+      name: { tr: 'Diller', en: 'Languages' },
+      items: [
+        { label: 'C#', icon: 'dotnet', core: true },
+        { label: 'TypeScript', icon: 'typescript', core: true },
+        { label: 'JavaScript', icon: 'javascript' },
+        { label: 'Python', icon: 'python' },
+        { label: 'Dart', icon: 'dart' },
+        'SQL',
+      ],
     },
     {
       name: { tr: 'Veritabanı', en: 'Databases' },
       items: [
-        'PostgreSQL',
+        { label: 'PostgreSQL', icon: 'postgresql', core: true },
         { tr: 'İlişkisel veri modelleme', en: 'Relational data modeling' },
         { tr: 'Sorgu optimizasyonu', en: 'Query optimization' },
         { tr: 'Migration yönetimi', en: 'Migration management' },
       ],
     },
     {
+      name: 'Frontend',
+      items: [
+        { label: 'Next.js 15', icon: 'nextdotjs', core: true },
+        { label: 'React', icon: 'react' },
+        { label: 'TypeScript', icon: 'typescript' },
+        { label: 'TanStack Query', icon: 'reactquery' },
+        { label: 'Tailwind CSS', icon: 'tailwindcss' },
+        { label: 'HTML', icon: 'html5' },
+        { label: 'CSS', icon: 'css' },
+      ],
+    },
+    {
+      name: { tr: 'Mobil', en: 'Mobile' },
+      items: [
+        { label: 'React Native', icon: 'react', core: true },
+        { label: 'Expo', icon: 'expo' },
+        { label: 'Flutter', icon: 'flutter' },
+      ],
+    },
+    {
       name: { tr: 'Kimlik ve Güvenlik', en: 'Identity & Security' },
       items: [
-        'JWT',
-        'ASP.NET Core Identity',
+        { label: 'JWT', icon: 'jsonwebtokens' },
+        { label: 'ASP.NET Core Identity', icon: 'dotnet' },
         'Cookie Authentication',
         { tr: 'Refresh token rotasyonu', en: 'Refresh token rotation' },
         { tr: 'Rol ve izin tabanlı yetkilendirme', en: 'Role- and permission-based authorization' },
@@ -346,26 +384,34 @@ export const cv: CV = {
     {
       name: { tr: 'Bulut ve DevOps', en: 'Cloud & DevOps' },
       items: [
+        { label: 'Docker', icon: 'docker' },
+        { label: 'Nginx', icon: 'nginx' },
+        { label: 'Ubuntu Server', icon: 'ubuntu' },
+        { label: 'GitHub Actions (CI/CD)', icon: 'githubactions' },
         'AWS EC2',
         'AWS S3',
-        'Docker',
-        'Nginx',
-        'Ubuntu Server',
-        'GitHub Actions (CI/CD)',
         { tr: 'SSL ve alan adı yönetimi', en: 'SSL and domain management' },
       ],
     },
     {
       name: { tr: 'Araçlar', en: 'Tools' },
-      items: ['Git', 'GitHub', 'Swagger/OpenAPI', 'Postman', 'Visual Studio', 'Rider', 'VS Code'],
+      items: [
+        { label: 'Git', icon: 'git' },
+        { label: 'GitHub', icon: 'github' },
+        { label: 'Swagger/OpenAPI', icon: 'swagger' },
+        { label: 'Postman', icon: 'postman' },
+        { label: 'Rider', icon: 'rider' },
+        'Visual Studio',
+        'VS Code',
+      ],
     },
     {
       name: { tr: 'Diğer', en: 'Other' },
       items: [
         { tr: 'QuestPDF (PDF üretimi)', en: 'QuestPDF (PDF generation)' },
         { tr: 'SMTP entegrasyonları', en: 'SMTP integrations' },
-        { tr: 'Python ile veri işleme', en: 'Python for data processing' },
-        { tr: 'Bluetooth Low Energy entegrasyonu', en: 'Bluetooth Low Energy integration' },
+        { label: { tr: 'Python ile veri işleme', en: 'Python for data processing' }, icon: 'python' },
+        { label: { tr: 'Bluetooth Low Energy entegrasyonu', en: 'Bluetooth Low Energy integration' }, icon: 'bluetooth' },
       ],
     },
   ],
@@ -406,6 +452,11 @@ export const cv: CV = {
     { name: { tr: 'Japonca', en: 'Japanese' }, level: 'basic' },
   ],
 };
+
+/** Yetenek listesindeki düz metni { label } biçimine getirir */
+export function toSkillItem(item: Localized | SkillItem): SkillItem {
+  return typeof item === 'object' && item !== null && 'label' in item ? item : { label: item };
+}
 
 /** Localized bir değerin istenen dildeki karşılığını döndürür. */
 export function t<T>(value: Localized<T>, lang: Lang): T {

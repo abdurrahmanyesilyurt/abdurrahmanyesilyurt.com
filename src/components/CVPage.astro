@@ -10,7 +10,7 @@ import Education from './Education.astro';
 import Writing from './Writing.astro';
 import Contact from './Contact.astro';
 import Footer from './Footer.astro';
-import { cv, t } from '../data/cv';
+import { cv, t, toSkillItem } from '../data/cv';
 import { getPosts } from '../lib/posts';
 import { languages, sectionKeys, ui, type Lang, type SectionKey } from '../i18n/ui';
 
@@ -47,7 +47,7 @@ const jsonLd = {
   description: t(cv.summary, lang),
   address: { '@type': 'PostalAddress', addressCountry: 'TR' },
   alumniOf: cv.education.map((edu) => ({ '@type': 'CollegeOrUniversity', name: t(edu.school, lang) })),
-  knowsAbout: cv.skills.flatMap((group) => group.items.map((item) => t(item, lang))),
+  knowsAbout: [...new Set(cv.skills.flatMap((group) => group.items.map((item) => t(toSkillItem(item).label, lang))))],
   knowsLanguage: ['tr', 'en'],
   sameAs: [cv.links.github, cv.links.linkedin].filter(Boolean),
 };
