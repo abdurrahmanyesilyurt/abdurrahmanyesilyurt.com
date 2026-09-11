@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import Section from './Section.astro';
-import { cv, t } from '../data/cv';
+import QrCode from './QrCode.astro';
+import { cv, displayUrl, t } from '../data/cv';
 import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -10,37 +12,92 @@ interface Props {
 
 const { lang, number } = Astro.props;
 const s = ui[lang];
+
+const projects = cv.projects.map((project) => ({
+  project,
+  links: (project.links ?? []).map((link) => ({
+    href: link.url,
+    label: link.label ? t(link.label, lang) : s.projectLinks[link.type],
+    // Baskıda linkler tıklanamadığı için adresin kendisi yazılır
+    printText: link.type === 'web' ? displayUrl(link.url) : s.projectLinks[link.type],
+  })),
+}));
 ---
 
 <Section id={s.sections.projects.id} number={number} title={s.sections.projects.label}>
-  <ul class="grid gap-px border-y border-rule bg-rule sm:grid-cols-2 print:grid-cols-2">
+  <!-- Baskıda gri "gap" zemini kullanılmaz: sayfa sonunda boş kalan hücre gri blok gibi görünür -->
+  <ul class="grid gap-px border-y border-rule bg-rule md:grid-cols-2 print:grid-cols-2 print:gap-0 print:border-b-0 print:bg-transparent">
     {
-      cv.projects.map((project) => (
-        <li class="scroll-reveal print-break-avoid flex flex-col bg-paper py-7 sm:odd:pr-6 sm:even:pl-6 print:py-3 print:odd:pr-3 print:even:pl-3">
-          <h3 class="font-serif text-2xl leading-tight sm:text-[1.75rem] print:text-lg">
-            {project.url ? (
-              <a href={project.url} target="_blank" rel="noopener" class="transition-colors hover:text-accent">
-                {project.name} <span aria-hidden="true">↗</span>
-              </a>
-            ) : (
-              project.name
+      projects.map(({ project, links }) => (
+        <li class="scroll-reveal print-break-avoid flex flex-col gap-5 bg-paper py-8 md:odd:pr-8 md:even:pl-8 print:gap-1.5 print:border-b print:border-rule print:py-3 print:odd:pr-4 print:even:pl-4">
+          <div class="flex items-start gap-4">
+            {project.icon && (
+              <Image
+                src={project.icon}
+                alt=""
+                width={96}
+                height={96}
+                class="size-12 shrink-0 rounded-xl ring-1 ring-rule print:size-9"
+              />
             )}
-          </h3>
-          <p class="mt-2 leading-relaxed text-ink-2">{t(project.description, lang)}</p>
-          <ul class="mt-auto flex flex-wrap gap-x-3 gap-y-1 pt-4 font-mono text-[11px] tracking-[0.1em] text-ink-3 uppercase">
+            <div class="min-w-0 flex-1">
+              <h3 class="font-serif text-[1.75rem] leading-tight print:text-lg">{project.name}</h3>
+              <p class="mt-1 font-mono text-[11px] tracking-[0.1em] text-ink-2 uppercase print:text-[9px]">
+                {t(project.category, lang)}
+                {project.platforms && project.platforms.length > 0 && (
+                  <>
+                    <span aria-hidden="true">{' · '}</span>
+                    {/* Marka adları: Türkçe büyük harf kuralı "iOS"u "İOS" yapmasın */}
+                    <span lang="en">{project.platforms.join(' + ')}</span>
+                  </>
+                )}
+              </p>
+            </div>
+            {project.qr && (
+              <figure class="hidden w-24 shrink-0 text-center sm:block print:block print:w-16">
+                <QrCode
+                  value={project.qr.url}
+                  label={`${project.name} — ${t(project.qr.label, lang)}`}
+                  class="block w-full rounded-md border border-rule"
+                />
+                <figcaption class="mt-1.5 font-mono text-[10px] leading-tight text-ink-2 print:mt-1 print:text-[8px]">
+                  {t(project.qr.label, lang)}
+                </figcaption>
+              </figure>
+            )}
+          </div>
+
+          <p class="leading-relaxed text-ink-2 print:text-sm print:leading-snug">{t(project.description, lang)}</p>
+
+          {project.role && (
+            <p class="text-[15px] leading-relaxed print:text-sm print:leading-snug">
+              <span class="mr-2 font-mono text-[11px] tracking-[0.1em] text-ink-2 uppercase print:text-[9px]">{s.projectRole}</span>
+              {t(project.role, lang)}
+            </p>
+          )}
+
+          <ul lang="en" class="flex flex-wrap gap-x-3 gap-y-1 font-mono text-[11px] tracking-[0.08em] text-ink-2 uppercase print:gap-x-2 print:gap-y-0 print:text-[9px]">
             {project.tech.map((tech) => (
               <li>{tech}</li>
             ))}
           </ul>
-          {project.repo && (
-            <a
-              href={project.repo}
-              target="_blank"
-              rel="noopener"
-              class="mt-3 font-mono text-[11px] tracking-[0.1em] text-ink-2 uppercase transition-colors hover:text-accent print:hidden"
-            >
-              GitHub ↗
-            </a>
+
+          {links.length > 0 && (
+            <div class="mt-auto flex flex-wrap gap-2 print:hidden">
+              {links.map((link) => (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-flex items-center gap-1.5 rounded-full border border-rule px-3.5 py-1.5 text-[13px] transition-colors hover:border-ink hover:text-accent"
+                >
+                  {link.label} <span aria-hidden="true">↗</span>
+                </a>
+              ))}
+            </div>
+          )}
+          {links.length > 0 && (
+            <p class="hidden font-mono text-[9px] text-ink-2 print:block">{links.map((link) => link.printText).join(' · ')}</p>
           )}
         </li>
       ))

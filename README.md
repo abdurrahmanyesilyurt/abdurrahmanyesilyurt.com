@@ -21,7 +21,8 @@ Source code of my personal CV website — **[abdurrahmanyesilyurt.com](https://w
 
 - **Bilingual.** Turkish at `/`, English at `/en/`, with `hreflang` alternates and a sitemap.
 - **One content file.** All CV data lives in a typed [`src/data/cv.ts`](src/data/cv.ts); both languages sit side by side.
-- **Print-ready.** <kbd>Ctrl</kbd>+<kbd>P</kbd> (or the download button) produces a clean, one-page A4 PDF of the CV.
+- **Print-ready.** <kbd>Ctrl</kbd>+<kbd>P</kbd> (or the download button) produces a clean A4 PDF of the CV, with contact details at the top.
+- **Projects with QR codes.** Each project links its live site and App Store / Google Play listings; QR codes are generated at build time (no third-party service), so they work on the printed CV too.
 - **Light and dark themes** that follow the system setting, with a manual toggle.
 - **Static and fast.** No client-side framework; the only JavaScript is a sub-1 KB theme toggle.
 - **Accessible.** Semantic HTML, skip link, visible focus states and `prefers-reduced-motion` support.

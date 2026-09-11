@@ -26,7 +26,9 @@ interface UI {
   basic: string;
   contactTitle: string;
   contactAccent: string;
-  contactLinks: { email: string; github: string; linkedin: string; web: string };
+  contactLinks: { email: string; github: string; linkedin: string };
+  projectRole: string;
+  projectLinks: { web: string; 'google-play': string; 'app-store': string };
   builtWith: string;
   lastUpdated: string;
 }
@@ -60,7 +62,9 @@ export const ui: Record<Lang, UI> = {
     basic: 'Temel seviye',
     contactTitle: 'Bir projen ya da açık bir pozisyon mu var?',
     contactAccent: 'Konuşalım.',
-    contactLinks: { email: 'E-posta', github: 'GitHub', linkedin: 'LinkedIn', web: 'Web' },
+    contactLinks: { email: 'E-posta', github: 'GitHub', linkedin: 'LinkedIn' },
+    projectRole: 'Rolüm',
+    projectLinks: { web: 'Web sitesi', 'google-play': 'Google Play', 'app-store': 'App Store' },
     builtWith: 'Astro ile yazıldı · Vercel’de yayında',
     lastUpdated: 'Son güncelleme',
   },
@@ -92,7 +96,9 @@ export const ui: Record<Lang, UI> = {
     basic: 'Basic',
     contactTitle: 'Have a project or an open role?',
     contactAccent: 'Let’s talk.',
-    contactLinks: { email: 'Email', github: 'GitHub', linkedin: 'LinkedIn', web: 'Web' },
+    contactLinks: { email: 'Email', github: 'GitHub', linkedin: 'LinkedIn' },
+    projectRole: 'My role',
+    projectLinks: { web: 'Website', 'google-play': 'Google Play', 'app-store': 'App Store' },
     builtWith: 'Built with Astro · Hosted on Vercel',
     lastUpdated: 'Last updated',
   },
