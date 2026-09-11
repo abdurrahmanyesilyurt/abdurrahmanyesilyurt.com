@@ -5,7 +5,6 @@
 Source code of my personal CV website — **[abdurrahmanyesilyurt.com](https://abdurrahmanyesilyurt.com)**
 
 [![CI](https://github.com/abdurrahmanyesilyurt/abdurrahmanyesilyurt.com/actions/workflows/ci.yml/badge.svg)](https://github.com/abdurrahmanyesilyurt/abdurrahmanyesilyurt.com/actions/workflows/ci.yml)
-[![Mozilla Observatory](https://img.shields.io/mozilla-observatory/grade/abdurrahmanyesilyurt.com?publish&label=security%20headers)](https://developer.mozilla.org/en-US/observatory/analyze?host=abdurrahmanyesilyurt.com)
 ![Astro](https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2f7d4f)](LICENSE)
