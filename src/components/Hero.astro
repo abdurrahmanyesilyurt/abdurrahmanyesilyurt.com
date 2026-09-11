@@ -1,0 +1,108 @@
+---
+import { cv, t } from '../data/cv';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const s = ui[lang];
+
+const splitAt = cv.name.lastIndexOf(' ');
+const firstName = cv.name.slice(0, splitAt);
+const lastName = cv.name.slice(splitAt + 1);
+
+const spoken = cv.languages
+  .map((l) => (l.level === 'native' ? t(l.name, lang) : `${t(l.name, lang)} (${l.level})`))
+  .join(' · ');
+
+const facts = [
+  { label: s.facts.role, value: t(cv.title, lang) },
+  { label: s.facts.focus, value: cv.focus.join(' · ') },
+  { label: s.facts.location, value: t(cv.location, lang) },
+  { label: s.facts.languages, value: spoken },
+];
+---
+
+<section id="top" class="pt-14 pb-16 sm:pt-20 lg:pt-28 lg:pb-24 print:pt-0 print:pb-4">
+  {
+    cv.openToWork && (
+      <p
+        class="reveal inline-flex items-center gap-2.5 rounded-full border border-rule py-1.5 pr-3.5 pl-3 font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase print:hidden"
+        style="--i: 0"
+      >
+        <span class="relative flex size-2" aria-hidden="true">
+          <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
+          <span class="relative inline-flex size-2 rounded-full bg-accent" />
+        </span>
+        {s.openToWork}
+      </p>
+    )
+  }
+
+  <h1
+    class="mt-8 font-serif text-[clamp(3.5rem,19vw,12.5rem)] leading-[0.84] tracking-[-0.025em] print:mt-0 print:text-[34pt]"
+  >
+    <span class="hero-line"><span style="--d: 100ms">{firstName}</span></span>
+    <span class="hero-line"><span style="--d: 220ms" class="text-accent italic">{lastName}</span></span>
+  </h1>
+
+  <div
+    class="mt-12 grid gap-x-10 gap-y-10 border-t border-rule pt-8 lg:mt-16 lg:grid-cols-12 print:mt-4 print:grid-cols-12 print:gap-x-6 print:gap-y-4 print:pt-4"
+  >
+    <dl
+      class="reveal order-2 grid content-start gap-x-8 gap-y-5 sm:grid-cols-2 lg:order-1 lg:col-span-4 lg:grid-cols-1 print:order-2 print:col-span-12 print:grid-cols-4 print:gap-x-6"
+      style="--i: 4"
+    >
+      {
+        facts.map((fact) => (
+          <div>
+            <dt class="font-mono text-[10px] tracking-[0.16em] text-ink-2 uppercase">{fact.label}</dt>
+            <dd class="mt-1 text-[15px] leading-snug print:text-sm">{fact.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="order-1 lg:order-2 lg:col-span-8 print:order-1 print:col-span-12">
+      <p class="reveal text-xl leading-relaxed text-pretty sm:text-2xl sm:leading-relaxed print:text-base" style="--i: 3">
+        {t(cv.summary, lang)}
+      </p>
+
+      <div class="reveal mt-8 flex flex-wrap items-center gap-3 print:hidden" style="--i: 5">
+        <a
+          href={`#${s.sections.contact.id}`}
+          class="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:bg-accent"
+        >
+          {s.contactCta}
+          <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
+        </a>
+        {
+          cv.links.github && (
+            <a
+              href={cv.links.github}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 rounded-full border border-rule px-5 py-3 text-sm transition-colors hover:border-ink"
+            >
+              GitHub <span aria-hidden="true">↗</span>
+            </a>
+          )
+        }
+        {
+          cv.links.linkedin && (
+            <a
+              href={cv.links.linkedin}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 rounded-full border border-rule px-5 py-3 text-sm transition-colors hover:border-ink"
+            >
+              LinkedIn <span aria-hidden="true">↗</span>
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
