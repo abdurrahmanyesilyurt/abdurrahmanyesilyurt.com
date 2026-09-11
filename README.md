@@ -27,7 +27,7 @@ Source code of my personal CV website — **[abdurrahmanyesilyurt.com](https://w
 - **Light and dark themes** that follow the system setting, with a manual toggle.
 - **Static and fast.** No client-side framework; the only JavaScript is a sub-1 KB theme toggle.
 - **Accessible.** Semantic HTML, skip link, visible focus states and `prefers-reduced-motion` support.
-- **Search- and share-friendly.** Canonical URLs, Open Graph image and schema.org `Person` data.
+- **Search- and share-friendly.** Canonical URLs, schema.org `Person` and `BlogPosting` data, and share images generated at build time for each language and each blog post.
 
 ## Security
 

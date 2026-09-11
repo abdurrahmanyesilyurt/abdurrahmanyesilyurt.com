@@ -20,11 +20,24 @@ interface Props {
   noindex?: boolean;
   /** Blog yazıları için Open Graph "article" bilgileri */
   article?: { publishedTime: Date; modifiedTime?: Date; tags?: string[] };
+  /** Paylaşım görseli (varsayılan: dilin ana sayfa kartı, build'de üretilir) */
+  ogImage?: string;
+  ogImageAlt?: string;
 }
 
-const { lang, title, description, alternates = [], jsonLd, noindex = false, article } = Astro.props;
+const {
+  lang,
+  title,
+  description,
+  alternates = [],
+  jsonLd,
+  noindex = false,
+  article,
+  ogImage: ogImagePath = `/og/${lang}.png`,
+  ogImageAlt = 'Abdurrahman Yeşilyurt',
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL('/og.png', Astro.site);
+const ogImage = new URL(ogImagePath, Astro.site);
 // x-default: varsayılan dil (Türkçe) sürümü
 const xDefault = alternates.find((alt) => alt.lang === 'tr')?.href ?? '/';
 const rssHref = `${lang === 'tr' ? '' : '/en'}/rss.xml`;
@@ -65,7 +78,7 @@ const jsonLdHtml = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c');
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Abdurrahman Yeşilyurt" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
 
     {preloadFonts.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
