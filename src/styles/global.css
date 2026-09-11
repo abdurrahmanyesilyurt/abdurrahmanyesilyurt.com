@@ -7,10 +7,12 @@
   --color-ink-3: var(--ink-3);
   --color-rule: var(--rule);
   --color-accent: var(--accent);
+}
 
-  --font-serif: var(--font-instrument-serif);
-  --font-sans: var(--font-instrument-sans);
-  --font-mono: var(--font-plex-mono);
+@theme {
+  --font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 }
 
 /*
@@ -181,13 +183,5 @@ body::before {
 
   .print-break-avoid {
     break-inside: avoid;
-  }
-
-  .print-url::after {
-    content: attr(data-print-url);
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--ink-2);
   }
 }
