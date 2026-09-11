@@ -97,6 +97,27 @@ body::before {
   padding-left: 0.3em;
 }
 
+/* Açılır deneyim kartları: destekleyen tarayıcılarda yükseklik animasyonlu açılır */
+@media (prefers-reduced-motion: no-preference) {
+  @supports selector(::details-content) {
+    details[data-expandable] {
+      interpolate-size: allow-keywords;
+    }
+
+    details[data-expandable]::details-content {
+      block-size: 0;
+      overflow-y: clip;
+      transition:
+        block-size 0.35s cubic-bezier(0.2, 0.7, 0.1, 1),
+        content-visibility 0.35s allow-discrete;
+    }
+
+    details[data-expandable][open]::details-content {
+      block-size: auto;
+    }
+  }
+}
+
 /* Hero'daki isim satırları alttan kayarak gelir */
 .hero-line {
   display: block;
@@ -184,5 +205,12 @@ body::before {
 
   .print-break-avoid {
     break-inside: avoid;
+  }
+
+  /* Kapalı kartların içeriği de basılsın (site.js "beforeprint"te zaten açar; bu yedek) */
+  details[data-expandable]::details-content {
+    content-visibility: visible;
+    block-size: auto;
+    transition: none !important;
   }
 }

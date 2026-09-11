@@ -21,6 +21,7 @@ const { id, number, title, keepTogether = false } = Astro.props;
     <div class="lg:sticky lg:top-28 print:static">
       <p class="font-mono text-xs text-ink-3">{number}</p>
       <h2 class="mt-2 font-serif text-4xl leading-none sm:text-5xl print:text-3xl">{title}</h2>
+      <slot name="header-extra" />
     </div>
   </header>
   <div class="lg:col-span-9 print:col-span-9">
