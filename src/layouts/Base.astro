@@ -1,0 +1,59 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  alternates?: { lang: Lang; href: string }[];
+  jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+}
+
+const { lang, title, description, alternates = [], jsonLd, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.lang} href={new URL(alt.href, Astro.site)} />)}
+    {alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />}
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f100e" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="Abdurrahman Yeşilyurt" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'tr' ? 'tr_TR' : 'en_US'} />
+    <meta name="twitter:card" content="summary" />
+
+    <Font cssVariable="--font-instrument-serif" preload />
+    <Font cssVariable="--font-instrument-sans" preload />
+    <Font cssVariable="--font-plex-mono" />
+
+    <script is:inline>
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
+
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body class="min-h-dvh">
+    <slot />
+  </body>
+</html>

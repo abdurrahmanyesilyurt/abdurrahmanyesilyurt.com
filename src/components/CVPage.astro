@@ -1,0 +1,63 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Experience from './Experience.astro';
+import Projects from './Projects.astro';
+import Skills from './Skills.astro';
+import Education from './Education.astro';
+import Contact from './Contact.astro';
+import Footer from './Footer.astro';
+import { cv, t } from '../data/cv';
+import { languages, sectionKeys, ui, type Lang, type SectionKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const s = ui[lang];
+
+// İçeriği boş olan bölümler hiç gösterilmez; numaralar buna göre sıralanır.
+const hasContent: Record<SectionKey, boolean> = {
+  experience: cv.experience.length > 0,
+  projects: cv.projects.length > 0,
+  skills: cv.skills.length > 0,
+  education: cv.education.length + cv.certifications.length + cv.languages.length > 0,
+  contact: true,
+};
+const visible = sectionKeys.filter((key) => hasContent[key]);
+const number = (key: SectionKey) => String(visible.indexOf(key) + 1).padStart(2, '0');
+const nav = visible.map((key) => ({ href: `#${s.sections[key].id}`, label: s.sections[key].label }));
+
+const alternates = (Object.keys(languages) as Lang[]).map((code) => ({ lang: code, href: getRelativeLocaleUrl(code) }));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: cv.name,
+  url: Astro.site?.href,
+  jobTitle: t(cv.title, lang),
+  description: t(cv.summary, lang),
+  address: { '@type': 'PostalAddress', addressCountry: 'TR' },
+  alumniOf: cv.education.map((edu) => ({ '@type': 'CollegeOrUniversity', name: t(edu.school, lang) })),
+  knowsAbout: cv.skills.flatMap((group) => group.items.map((item) => t(item, lang))),
+  knowsLanguage: ['tr', 'en'],
+  sameAs: [cv.links.github, cv.links.linkedin].filter(Boolean),
+};
+---
+
+<Base lang={lang} title={s.meta.title} description={s.meta.description} alternates={alternates} jsonLd={jsonLd}>
+  <a href="#main" class="skip-link">{s.skipToContent}</a>
+  <Header lang={lang} nav={nav} />
+  <main id="main" class="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12 print:max-w-none print:px-0">
+    <Hero lang={lang} />
+    {hasContent.experience && <Experience lang={lang} number={number('experience')} />}
+    {hasContent.projects && <Projects lang={lang} number={number('projects')} />}
+    {hasContent.skills && <Skills lang={lang} number={number('skills')} />}
+    {hasContent.education && <Education lang={lang} number={number('education')} />}
+    <Contact lang={lang} number={number('contact')} />
+  </main>
+  <Footer lang={lang} />
+</Base>

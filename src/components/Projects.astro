@@ -1,0 +1,49 @@
+---
+import Section from './Section.astro';
+import { cv, t } from '../data/cv';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  number: string;
+}
+
+const { lang, number } = Astro.props;
+const s = ui[lang];
+---
+
+<Section id={s.sections.projects.id} number={number} title={s.sections.projects.label}>
+  <ul class="grid gap-px border-y border-rule bg-rule sm:grid-cols-2 print:grid-cols-2">
+    {
+      cv.projects.map((project) => (
+        <li class="scroll-reveal print-break-avoid flex flex-col bg-paper py-7 sm:odd:pr-6 sm:even:pl-6 print:py-3 print:odd:pr-3 print:even:pl-3">
+          <h3 class="font-serif text-2xl leading-tight sm:text-[1.75rem] print:text-lg">
+            {project.url ? (
+              <a href={project.url} target="_blank" rel="noopener" class="transition-colors hover:text-accent">
+                {project.name} <span aria-hidden="true">↗</span>
+              </a>
+            ) : (
+              project.name
+            )}
+          </h3>
+          <p class="mt-2 leading-relaxed text-ink-2">{t(project.description, lang)}</p>
+          <ul class="mt-auto flex flex-wrap gap-x-3 gap-y-1 pt-4 font-mono text-[11px] tracking-[0.1em] text-ink-3 uppercase">
+            {project.tech.map((tech) => (
+              <li>{tech}</li>
+            ))}
+          </ul>
+          {project.repo && (
+            <a
+              href={project.repo}
+              target="_blank"
+              rel="noopener"
+              class="mt-3 font-mono text-[11px] tracking-[0.1em] text-ink-2 uppercase transition-colors hover:text-accent print:hidden"
+            >
+              GitHub ↗
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</Section>

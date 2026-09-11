@@ -1,0 +1,32 @@
+---
+import Section from './Section.astro';
+import { cv, t } from '../data/cv';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  number: string;
+}
+
+const { lang, number } = Astro.props;
+const s = ui[lang];
+---
+
+<Section id={s.sections.skills.id} number={number} title={s.sections.skills.label}>
+  <dl class="divide-y divide-rule">
+    {
+      cv.skills.map((group) => (
+        <div class="scroll-reveal print-break-avoid grid gap-x-8 gap-y-2 py-6 first:pt-0 sm:grid-cols-[10.5rem_1fr] print:grid-cols-[9rem_1fr] print:py-2">
+          <dt class="pt-2.5 font-mono text-xs tracking-[0.1em] text-ink-2 uppercase print:pt-1">{t(group.name, lang)}</dt>
+          <dd>
+            <ul class="slash-list flex flex-wrap gap-x-[0.3em] font-serif text-2xl leading-snug sm:text-[1.75rem] print:text-base">
+              {group.items.map((item) => (
+                <li class="whitespace-nowrap">{t(item, lang)}</li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</Section>

@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+
+  --font-serif: var(--font-instrument-serif);
+  --font-sans: var(--font-instrument-sans);
+  --font-mono: var(--font-plex-mono);
+}
+
+/*
+ * Renkler: kâğıt & mürekkep, vurgu rengi "yeşil".
+ * light-dark() sistem temasını izler; tema düğmesi data-theme ile bunu ezer.
+ */
+:root {
+  color-scheme: light dark;
+  --paper: light-dark(#f4f1ea, #0f100e);
+  --ink: light-dark(#161613, #ece8df);
+  --ink-2: light-dark(#56534b, #a9a59b);
+  --ink-3: light-dark(#8b877c, #6f6c64);
+  --rule: light-dark(#d9d3c5, #2a2b27);
+  --accent: light-dark(#11704a, #5bd69a);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* Kâğıt dokusu */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 70;
+  transform: translateY(-200%);
+  border-radius: 9999px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* Yetenekler: "C# / .NET / ASP.NET Core" gibi dizilen liste */
+.slash-list > li:not(:last-child)::after {
+  content: "/";
+  color: var(--ink-3);
+  padding-left: 0.3em;
+}
+
+/* Hero'daki isim satırları alttan kayarak gelir */
+.hero-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.hero-line > span {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .hero-line > span {
+    animation: slide-up 1.1s cubic-bezier(0.19, 1, 0.22, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  .reveal {
+    animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 200ms);
+  }
+
+  @supports (animation-timeline: view()) {
+    .scroll-reveal {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* Ctrl+P → "PDF olarak kaydet" ile temiz, tek renk bir CV çıkar */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 15mm;
+  }
+
+  :root,
+  :root[data-theme] {
+    color-scheme: light !important;
+    --paper: #fff !important;
+    --ink: #111 !important;
+    --ink-2: #444 !important;
+    --ink-3: #777 !important;
+    --rule: #d4d4d4 !important;
+    --accent: #0d5c3c !important;
+  }
+
+  html {
+    font-size: 12px;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  body::before {
+    display: none;
+  }
+
+  .print-break-avoid {
+    break-inside: avoid;
+  }
+
+  .print-url::after {
+    content: attr(data-print-url);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-2);
+  }
+}

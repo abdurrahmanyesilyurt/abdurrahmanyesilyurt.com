@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base lang="tr" title="404 — Sayfa bulunamadı / Page not found" description="Sayfa bulunamadı." noindex>
+  <main class="mx-auto grid min-h-dvh max-w-[1180px] content-center px-5 sm:px-8 lg:px-12">
+    <p class="font-mono text-xs tracking-[0.14em] text-ink-3 uppercase">Hata / Error 404</p>
+    <h1 class="mt-4 font-serif text-[clamp(3rem,10vw,8rem)] leading-[0.9] tracking-[-0.02em]">
+      Sayfa bulunamadı.<br />
+      <em class="text-accent" lang="en">Page not found.</em>
+    </h1>
+    <p class="mt-10 flex flex-wrap gap-3">
+      <a href="/" class="rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:bg-accent">
+        ← Ana sayfa
+      </a>
+      <a href="/en/" lang="en" class="rounded-full border border-rule px-5 py-3 text-sm transition-colors hover:border-ink">
+        ← Home
+      </a>
+    </p>
+  </main>
+</Base>
