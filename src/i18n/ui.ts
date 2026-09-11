@@ -5,7 +5,7 @@ export const languages = {
 
 export type Lang = keyof typeof languages;
 
-export const sectionKeys = ['experience', 'projects', 'skills', 'education', 'contact'] as const;
+export const sectionKeys = ['experience', 'projects', 'skills', 'education', 'writing', 'contact'] as const;
 export type SectionKey = (typeof sectionKeys)[number];
 
 interface UI {
@@ -33,6 +33,20 @@ interface UI {
   projectLinks: { web: string; 'google-play': string; 'app-store': string };
   builtWith: string;
   lastUpdated: string;
+  /** Blog listesinin adresi, sonda "/" ile */
+  blogPath: string;
+  blog: {
+    title: string;
+    description: string;
+    intro: string;
+    allPosts: string;
+    back: string;
+    readingTime: (minutes: number) => string;
+    updated: string;
+    otherLanguage: string;
+    rss: string;
+    aboutAuthor: string;
+  };
 }
 
 export const ui: Record<Lang, UI> = {
@@ -47,6 +61,7 @@ export const ui: Record<Lang, UI> = {
       projects: { id: 'projeler', label: 'Projeler' },
       skills: { id: 'yetenekler', label: 'Yetenekler' },
       education: { id: 'egitim', label: 'Eğitim' },
+      writing: { id: 'yazilar', label: 'Yazılar' },
       contact: { id: 'iletisim', label: 'İletişim' },
     },
     skipToContent: 'İçeriğe geç',
@@ -71,6 +86,19 @@ export const ui: Record<Lang, UI> = {
     projectLinks: { web: 'Web sitesi', 'google-play': 'Google Play', 'app-store': 'App Store' },
     builtWith: 'Astro ile yazıldı · Vercel’de yayında',
     lastUpdated: 'Son güncelleme',
+    blogPath: '/yazilar/',
+    blog: {
+      title: 'Yazılar — Abdurrahman Yeşilyurt',
+      description: 'Backend, güvenlik ve full-stack geliştirme üzerine teknik notlar.',
+      intro: 'Backend, güvenlik ve full-stack geliştirme üzerine notlar.',
+      allPosts: 'Tüm yazılar',
+      back: 'Yazılar',
+      readingTime: (minutes) => `${minutes} dk okuma`,
+      updated: 'Güncellendi',
+      otherLanguage: 'Read in English',
+      rss: 'RSS beslemesi',
+      aboutAuthor: 'Backend ağırlıklı full-stack yazılım geliştiricisi. Özgeçmişim ve projelerim ana sayfada.',
+    },
   },
   en: {
     meta: {
@@ -83,6 +111,7 @@ export const ui: Record<Lang, UI> = {
       projects: { id: 'projects', label: 'Projects' },
       skills: { id: 'skills', label: 'Skills' },
       education: { id: 'education', label: 'Education' },
+      writing: { id: 'writing', label: 'Writing' },
       contact: { id: 'contact', label: 'Contact' },
     },
     skipToContent: 'Skip to content',
@@ -107,5 +136,18 @@ export const ui: Record<Lang, UI> = {
     projectLinks: { web: 'Website', 'google-play': 'Google Play', 'app-store': 'App Store' },
     builtWith: 'Built with Astro · Hosted on Vercel',
     lastUpdated: 'Last updated',
+    blogPath: '/en/writing/',
+    blog: {
+      title: 'Writing — Abdurrahman Yeşilyurt',
+      description: 'Technical notes on backend, security and full-stack development.',
+      intro: 'Notes on backend, security and full-stack development.',
+      allPosts: 'All posts',
+      back: 'Writing',
+      readingTime: (minutes) => `${minutes} min read`,
+      updated: 'Updated',
+      otherLanguage: 'Türkçesini oku',
+      rss: 'RSS feed',
+      aboutAuthor: 'Backend-leaning full-stack software developer. My résumé and projects are on the home page.',
+    },
   },
 };

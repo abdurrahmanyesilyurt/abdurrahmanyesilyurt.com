@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import PostList from './PostList.astro';
+import { getPosts } from '../lib/posts';
+import { homePath, siteNav } from '../lib/nav';
+import { languages, ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const s = ui[lang];
+const posts = await getPosts(lang);
+
+const codes = Object.keys(languages) as Lang[];
+const blogPaths = Object.fromEntries(codes.map((code) => [code, ui[code].blogPath])) as Record<Lang, string>;
+const rssHref = `${lang === 'tr' ? '' : '/en'}/rss.xml`;
+---
+
+<Base
+  lang={lang}
+  title={s.blog.title}
+  description={s.blog.description}
+  alternates={codes.map((code) => ({ lang: code, href: blogPaths[code] }))}
+>
+  <a href="#main" class="skip-link">{s.skipToContent}</a>
+  <Header lang={lang} nav={siteNav(lang)} homeHref={homePath(lang)} langHrefs={blogPaths} />
+  <main id="main" class="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
+    <section class="grid gap-x-10 gap-y-10 py-16 sm:py-24 lg:grid-cols-12">
+      <header class="lg:col-span-3">
+        <div class="lg:sticky lg:top-28">
+          <h1 class="font-serif text-5xl leading-none sm:text-6xl">{s.sections.writing.label}</h1>
+          <p class="mt-4 leading-relaxed text-ink-2">{s.blog.intro}</p>
+          <a
+            href={rssHref}
+            class="mt-5 inline-block font-mono text-[11px] tracking-[0.12em] text-ink-2 uppercase underline decoration-rule underline-offset-4 transition-colors hover:text-ink hover:decoration-ink"
+          >
+            {s.blog.rss}
+          </a>
+        </div>
+      </header>
+      <div class="lg:col-span-9">
+        <PostList posts={posts} lang={lang} headingLevel="h2" />
+      </div>
+    </section>
+  </main>
+  <Footer lang={lang} />
+</Base>

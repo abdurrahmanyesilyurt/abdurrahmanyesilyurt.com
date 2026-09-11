@@ -23,6 +23,7 @@ Source code of my personal CV website — **[abdurrahmanyesilyurt.com](https://w
 - **One content file.** All CV data lives in a typed [`src/data/cv.ts`](src/data/cv.ts); both languages sit side by side.
 - **Print-ready.** <kbd>Ctrl</kbd>+<kbd>P</kbd> (or the download button) produces a clean A4 PDF of the CV, with contact details at the top.
 - **Projects with QR codes.** Each project links its live site and App Store / Google Play listings; QR codes are generated at build time (no third-party service), so they work on the printed CV too.
+- **Writing.** A Markdown blog in both languages with RSS feeds, reading time and Prism syntax highlighting (class-based, so it works under the strict CSP).
 - **Light and dark themes** that follow the system setting, with a manual toggle.
 - **Static and fast.** No client-side framework; the only JavaScript is a sub-1 KB theme toggle.
 - **Accessible.** Semantic HTML, skip link, visible focus states and `prefers-reduced-motion` support.
@@ -36,7 +37,7 @@ The site is static, but it is configured like a production application.
 | --- | --- |
 | Content Security Policy | `default-src 'none'` without `'unsafe-inline'`: every script, style and font is served from the site's own origin. [`scripts/check-csp.mjs`](scripts/check-csp.mjs) fails CI if inline code ever appears in the build. |
 | HTTP headers | HSTS (2 years), `X-Frame-Options: DENY` with `frame-ancestors 'none'`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, COOP and CORP. See [`vercel.json`](vercel.json). |
-| Privacy | Fonts are bundled with the site. No analytics, trackers, cookies or third-party requests. |
+| Privacy | Fonts are bundled with the site. Visits are counted with cookieless, first-party Vercel Web Analytics; no trackers, cookies or third-party requests. |
 | Supply chain | Dependabot version and security updates, GitHub Actions pinned to commit SHAs, read-only workflow token. |
 | Code scanning | CodeQL analysis, secret scanning with push protection. |
 | Disclosure | [`SECURITY.md`](SECURITY.md) and [`/.well-known/security.txt`](public/.well-known/security.txt) (RFC 9116) with private vulnerability reporting. |
@@ -52,11 +53,13 @@ Check it yourself on [securityheaders.com](https://securityheaders.com/?q=www.ab
 ```text
 src/
 ├── data/cv.ts           # all CV content (TR + EN)
+├── content/posts/       # blog posts: tr/*.md and en/*.md
 ├── i18n/ui.ts           # interface strings
 ├── components/          # page sections (Hero, Experience, Skills, ...)
 ├── layouts/Base.astro   # <head>: meta tags, fonts, structured data
-├── pages/               # / (Turkish), /en/ (English), 404
-└── styles/global.css    # design tokens, animations, print styles
+├── lib/                 # post, navigation and RSS helpers
+├── pages/               # / (tr), /en/, /yazilar/, /en/writing/, RSS, 404
+└── styles/global.css    # design tokens, prose, code theme, print styles
 public/
 ├── site.js              # theme toggle — the only script on the site
 └── .well-known/security.txt
@@ -79,6 +82,21 @@ npm run check:csp   # make sure the build works under the strict CSP
 ## Updating the CV
 
 Edit [`src/data/cv.ts`](src/data/cv.ts). Each text field is either a plain string (the same in both languages) or a `{ tr, en }` pair. Adding an entry to `projects` makes the Projects section appear automatically.
+
+## Writing a post
+
+Add a Markdown file to `src/content/posts/tr/` or `src/content/posts/en/`. The file name becomes the URL (`/yazilar/<name>/` or `/en/writing/<name>/`).
+
+```md
+---
+title: Post title
+description: One or two sentences for the list, search results and link previews.
+date: 2026-09-11
+tags: [security, astro]
+translationKey: my-post   # same key in both languages links the translations
+draft: false              # drafts only show on the dev server
+---
+```
 
 ## Deployment
 
