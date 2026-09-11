@@ -29,8 +29,7 @@ const facts = [
   {
     cv.openToWork && (
       <p
-        class="reveal inline-flex items-center gap-2.5 rounded-full border border-rule py-1.5 pr-3.5 pl-3 font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase print:hidden"
-        style="--i: 0"
+        class="reveal inline-flex items-center gap-2.5 rounded-full border border-rule py-1.5 pr-3.5 pl-3 font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase [--i:0] print:hidden"
       >
         <span class="relative flex size-2" aria-hidden="true">
           <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
@@ -44,16 +43,15 @@ const facts = [
   <h1
     class="mt-8 font-serif text-[clamp(3.5rem,19vw,12.5rem)] leading-[0.84] tracking-[-0.025em] print:mt-0 print:text-[34pt]"
   >
-    <span class="hero-line"><span style="--d: 100ms">{firstName}</span></span>
-    <span class="hero-line"><span style="--d: 220ms" class="text-accent italic">{lastName}</span></span>
+    <span class="hero-line"><span class="[--d:100ms]">{firstName}</span></span>
+    <span class="hero-line"><span class="text-accent italic [--d:220ms]">{lastName}</span></span>
   </h1>
 
   <div
     class="mt-12 grid gap-x-10 gap-y-10 border-t border-rule pt-8 lg:mt-16 lg:grid-cols-12 print:mt-4 print:grid-cols-12 print:gap-x-6 print:gap-y-4 print:pt-4"
   >
     <dl
-      class="reveal order-2 grid content-start gap-x-8 gap-y-5 sm:grid-cols-2 lg:order-1 lg:col-span-4 lg:grid-cols-1 print:order-2 print:col-span-12 print:grid-cols-4 print:gap-x-6"
-      style="--i: 4"
+      class="reveal order-2 grid content-start gap-x-8 gap-y-5 sm:grid-cols-2 lg:order-1 lg:col-span-4 lg:grid-cols-1 [--i:4] print:order-2 print:col-span-12 print:grid-cols-4 print:gap-x-6"
     >
       {
         facts.map((fact) => (
@@ -66,11 +64,11 @@ const facts = [
     </dl>
 
     <div class="order-1 lg:order-2 lg:col-span-8 print:order-1 print:col-span-12">
-      <p class="reveal text-xl leading-relaxed text-pretty sm:text-2xl sm:leading-relaxed print:text-base" style="--i: 3">
+      <p class="reveal text-xl leading-relaxed text-pretty [--i:3] sm:text-2xl sm:leading-relaxed print:text-base">
         {t(cv.summary, lang)}
       </p>
 
-      <div class="reveal mt-8 flex flex-wrap items-center gap-3 print:hidden" style="--i: 5">
+      <div class="reveal mt-8 flex flex-wrap items-center gap-3 [--i:5] print:hidden">
         <a
           href={`#${s.sections.contact.id}`}
           class="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:bg-accent"

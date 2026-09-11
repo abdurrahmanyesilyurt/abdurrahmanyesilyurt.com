@@ -91,16 +91,4 @@ const codes = Object.keys(languages) as Lang[];
   </div>
 </header>
 
-<script>
-  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
-    const root = document.documentElement;
-    const current = root.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    const next = current === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    try {
-      localStorage.setItem('theme', next);
-    } catch {}
-  });
-
-  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
-</script>
+<!-- Tema ve PDF düğmelerinin tıklamaları public/site.js içinde dinleniyor -->
