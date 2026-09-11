@@ -21,6 +21,11 @@ export default defineConfig({
     inlineStylesheets: 'never',
   },
 
+  // Shiki her token için style="" basar (CSP'ye takılır); Prism sadece sınıf adı basar
+  markdown: {
+    syntaxHighlight: 'prism',
+  },
+
   vite: {
     plugins: [tailwindcss()],
   },

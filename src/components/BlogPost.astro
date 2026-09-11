@@ -1,0 +1,126 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import { cv } from '../data/cv';
+import { findTranslation, formatPostDate, postUrl, readingMinutes, type Post } from '../lib/posts';
+import { homePath, siteNav } from '../lib/nav';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  post: Post;
+  lang: Lang;
+}
+
+const { post, lang } = Astro.props;
+const s = ui[lang];
+const { Content } = await render(post);
+const { title, description, date, updated, tags } = post.data;
+
+const otherLang: Lang = lang === 'tr' ? 'en' : 'tr';
+const translation = await findTranslation(post, otherLang);
+const url = postUrl(post);
+const canonical = new URL(url, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: date.toISOString(),
+  dateModified: (updated ?? date).toISOString(),
+  inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
+  url: canonical,
+  mainEntityOfPage: canonical,
+  keywords: tags.join(', '),
+  author: { '@type': 'Person', name: cv.name, url: new URL(homePath(lang), Astro.site).href },
+};
+---
+
+<Base
+  lang={lang}
+  title={`${title} — ${cv.name}`}
+  description={description}
+  alternates={translation
+    ? [
+        { lang, href: url },
+        { lang: otherLang, href: postUrl(translation) },
+      ]
+    : []}
+  article={{ publishedTime: date, modifiedTime: updated, tags }}
+  jsonLd={jsonLd}
+>
+  <a href="#main" class="skip-link">{s.skipToContent}</a>
+  <Header
+    lang={lang}
+    nav={siteNav(lang)}
+    homeHref={homePath(lang)}
+    langHrefs={{ [otherLang]: translation ? postUrl(translation) : ui[otherLang].blogPath }}
+  />
+  <main id="main" class="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
+    <article class="mx-auto max-w-[44rem] py-14 sm:py-20">
+      <a
+        href={s.blogPath}
+        class="font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase transition-colors hover:text-ink print:hidden"
+      >
+        ← {s.blog.back}
+      </a>
+
+      <p class="mt-10 font-mono text-xs tracking-[0.1em] text-ink-2 uppercase">
+        <time datetime={date.toISOString().slice(0, 10)}>{formatPostDate(date, lang)}</time>
+        {
+          updated && (
+            <>
+              {' · '}
+              {s.blog.updated} <time datetime={updated.toISOString().slice(0, 10)}>{formatPostDate(updated, lang)}</time>
+            </>
+          )
+        }
+        {' · '}
+        {s.blog.readingTime(readingMinutes(post))}
+      </p>
+
+      <h1 class="mt-4 font-serif text-[clamp(2.5rem,6vw,4.25rem)] leading-[1.02] tracking-[-0.015em] text-balance">
+        {title}
+      </h1>
+      <p class="mt-6 text-xl leading-relaxed text-pretty text-ink-2">{description}</p>
+
+      {
+        tags.length > 0 && (
+          <ul class="mt-6 flex flex-wrap gap-2 font-mono text-[11px] tracking-[0.1em] text-ink-2 uppercase">
+            {tags.map((tag) => (
+              <li class="rounded-full border border-rule px-3 py-1">#{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+
+      <div class="prose prose-cv mt-12 max-w-none border-t border-rule pt-10">
+        <Content />
+      </div>
+
+      <footer class="mt-16 flex flex-wrap items-start justify-between gap-6 border-t border-rule pt-8">
+        <div class="max-w-md">
+          <a href={homePath(lang)} class="font-serif text-2xl leading-none transition-colors hover:text-accent">
+            {cv.name}<span class="text-accent">.</span>
+          </a>
+          <p class="mt-2 text-sm leading-relaxed text-ink-2">{s.blog.aboutAuthor}</p>
+        </div>
+        {
+          translation && (
+            <a
+              href={postUrl(translation)}
+              hreflang={otherLang}
+              lang={otherLang}
+              class="inline-flex items-center gap-2 rounded-full border border-rule px-4 py-2 text-sm transition-colors hover:border-ink print:hidden"
+            >
+              {s.blog.otherLanguage} <span aria-hidden="true">→</span>
+            </a>
+          )
+        }
+      </footer>
+    </article>
+  </main>
+  <Footer lang={lang} />
+</Base>

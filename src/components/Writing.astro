@@ -1,0 +1,29 @@
+---
+import Section from './Section.astro';
+import PostList from './PostList.astro';
+import type { Post } from '../lib/posts';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  number: string;
+  posts: Post[];
+}
+
+const { lang, number, posts } = Astro.props;
+const s = ui[lang];
+---
+
+<!-- Yazı listesi basılı CV'nin parçası değil -->
+<div class="print:hidden">
+  <Section id={s.sections.writing.id} number={number} title={s.sections.writing.label}>
+    <PostList posts={posts.slice(0, 3)} lang={lang} />
+    <a
+      href={s.blogPath}
+      class="group mt-8 inline-flex items-center gap-2 rounded-full border border-rule px-5 py-3 text-sm transition-colors hover:border-ink"
+    >
+      {s.blog.allPosts}
+      <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
+    </a>
+  </Section>
+</div>
