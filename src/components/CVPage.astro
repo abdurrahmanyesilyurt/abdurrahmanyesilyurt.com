@@ -38,6 +38,7 @@ const jsonLd = {
   '@type': 'Person',
   name: cv.name,
   url: Astro.site?.href,
+  email: cv.links.email ? `mailto:${cv.links.email}` : undefined,
   jobTitle: t(cv.title, lang),
   description: t(cv.summary, lang),
   address: { '@type': 'PostalAddress', addressCountry: 'TR' },

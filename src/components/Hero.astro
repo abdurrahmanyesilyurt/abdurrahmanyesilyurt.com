@@ -14,6 +14,7 @@ const firstName = cv.name.slice(0, splitAt);
 const lastName = cv.name.slice(splitAt + 1);
 
 const spoken = cv.languages
+  .filter((l) => l.level !== 'basic')
   .map((l) => (l.level === 'native' ? t(l.name, lang) : `${t(l.name, lang)} (${l.level})`))
   .join(' · ');
 
@@ -22,6 +23,7 @@ const facts = [
   { label: s.facts.focus, value: cv.focus.join(' · ') },
   { label: s.facts.location, value: t(cv.location, lang) },
   { label: s.facts.languages, value: spoken },
+  ...(cv.militaryService ? [{ label: s.facts.military, value: t(cv.militaryService, lang) }] : []),
 ];
 ---
 
@@ -51,7 +53,7 @@ const facts = [
     class="mt-12 grid gap-x-10 gap-y-10 border-t border-rule pt-8 lg:mt-16 lg:grid-cols-12 print:mt-4 print:grid-cols-12 print:gap-x-6 print:gap-y-4 print:pt-4"
   >
     <dl
-      class="reveal order-2 grid content-start gap-x-8 gap-y-5 sm:grid-cols-2 lg:order-1 lg:col-span-4 lg:grid-cols-1 [--i:4] print:order-2 print:col-span-12 print:grid-cols-4 print:gap-x-6"
+      class="reveal order-2 grid content-start gap-x-8 gap-y-5 sm:grid-cols-2 lg:order-1 lg:col-span-4 lg:grid-cols-1 [--i:4] print:order-2 print:col-span-12 print:grid-cols-5 print:gap-x-5"
     >
       {
         facts.map((fact) => (
@@ -64,7 +66,7 @@ const facts = [
     </dl>
 
     <div class="order-1 lg:order-2 lg:col-span-8 print:order-1 print:col-span-12">
-      <p class="reveal text-xl leading-relaxed text-pretty [--i:3] sm:text-2xl sm:leading-relaxed print:text-base">
+      <p class="reveal text-lg leading-relaxed text-pretty [--i:3] sm:text-xl sm:leading-relaxed lg:text-2xl lg:leading-relaxed print:text-base">
         {t(cv.summary, lang)}
       </p>
 

@@ -128,7 +128,8 @@ body::before {
     .scroll-reveal {
       animation: rise linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 60%;
+      /* Uzun deneyim kartları da en geç 160px kaydırmada tam görünür olsun */
+      animation-range: entry 0% entry min(60%, 160px);
     }
   }
 }

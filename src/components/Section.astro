@@ -3,14 +3,19 @@ interface Props {
   id: string;
   number: string;
   title: string;
+  /** Baskıda bölümü iki sayfaya bölme (kısa bölümler için) */
+  keepTogether?: boolean;
 }
 
-const { id, number, title } = Astro.props;
+const { id, number, title, keepTogether = false } = Astro.props;
 ---
 
 <section
   id={id}
-  class="grid scroll-mt-20 gap-x-10 gap-y-8 border-t border-rule py-16 sm:py-20 lg:grid-cols-12 print:grid-cols-12 print:gap-x-6 print:py-4"
+  class:list={[
+    'grid scroll-mt-20 gap-x-10 gap-y-8 border-t border-rule py-16 sm:py-20 lg:grid-cols-12 print:grid-cols-12 print:gap-x-6 print:py-4',
+    keepTogether && 'print-break-avoid',
+  ]}
 >
   <header class="lg:col-span-3 print:col-span-3">
     <div class="lg:sticky lg:top-28 print:static">

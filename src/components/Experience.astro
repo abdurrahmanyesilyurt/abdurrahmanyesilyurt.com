@@ -17,21 +17,41 @@ const s = ui[lang];
     {
       cv.experience.map((job) => {
         const highlights = job.highlights ? t(job.highlights, lang) : [];
+        // Kısa kartlar baskıda iki sayfaya bölünmesin; çok uzun olanın bölünmesine izin ver
+        const keepTogether = highlights.length <= 6;
         return (
-          <li class="scroll-reveal print-break-avoid grid gap-x-8 gap-y-2 py-8 first:pt-0 sm:grid-cols-[10.5rem_1fr] print:grid-cols-[9rem_1fr] print:py-3">
-            <p class="flex items-center gap-2 pt-2 font-mono text-xs tracking-[0.1em] whitespace-nowrap text-ink-2 uppercase print:pt-1">
+          <li
+            class:list={[
+              'scroll-reveal grid gap-x-8 gap-y-2 py-8 first:pt-0 sm:grid-cols-[10.5rem_1fr] print:grid-cols-[9rem_1fr] print:py-3',
+              keepTogether && 'print-break-avoid',
+            ]}
+          >
+            <p class="flex items-center gap-2 self-start pt-2 font-mono text-xs tracking-[0.1em] whitespace-nowrap text-ink-2 uppercase print:pt-1">
               {job.current && <span class="size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />}
               <time datetime={job.start}>{formatDate(job.start, lang)}</time>
               {(job.current || job.end) && <span aria-hidden="true">—</span>}
               {job.current ? <span>{s.present}</span> : job.end && <time datetime={job.end}>{formatDate(job.end, lang)}</time>}
             </p>
             <div>
-              <h3 class="font-serif text-[1.75rem] leading-tight sm:text-[2rem] print:text-xl">{t(job.role, lang)}</h3>
-              <p class="mt-1 text-ink-2">{t(job.company, lang)}</p>
+              <div class="print:break-inside-avoid print:break-after-avoid">
+                <h3 class="font-serif text-[1.75rem] leading-tight sm:text-[2rem] print:text-xl">{t(job.role, lang)}</h3>
+                <p class="mt-1 text-ink-2">
+                  {t(job.company, lang)}
+                  {job.location && (
+                    <>
+                      <span class="text-ink-3" aria-hidden="true">
+                        {' · '}
+                      </span>
+                      <span>{t(job.location, lang)}</span>
+                    </>
+                  )}
+                </p>
+                {job.detail && <p class="mt-1.5 font-mono text-[11px] tracking-[0.04em] text-ink-2">{t(job.detail, lang)}</p>}
+              </div>
               {highlights.length > 0 && (
-                <ul class="mt-4 space-y-2 leading-relaxed text-ink-2 print:mt-2 print:space-y-1">
+                <ul class="mt-4 space-y-2 leading-relaxed text-ink-2 print:mt-1.5 print:space-y-0.5 print:leading-snug">
                   {highlights.map((item) => (
-                    <li class="relative pl-5 before:absolute before:top-[0.8em] before:left-0 before:h-px before:w-2.5 before:bg-ink-3">
+                    <li class="relative pl-5 before:absolute before:top-[0.8em] before:left-0 before:h-px before:w-2.5 before:bg-ink-3 print:break-inside-avoid">
                       {item}
                     </li>
                   ))}

@@ -15,7 +15,7 @@ interface UI {
   navLabel: string;
   openToWork: string;
   present: string;
-  facts: { role: string; focus: string; location: string; languages: string };
+  facts: { role: string; focus: string; location: string; languages: string; military: string };
   contactCta: string;
   savePdf: string;
   themeToggle: string;
@@ -23,6 +23,7 @@ interface UI {
   certifications: string;
   languages: string;
   native: string;
+  basic: string;
   contactTitle: string;
   contactAccent: string;
   contactLinks: { email: string; github: string; linkedin: string; web: string };
@@ -48,7 +49,7 @@ export const ui: Record<Lang, UI> = {
     navLabel: 'Bölümler',
     openToWork: 'Yeni fırsatlara açığım',
     present: 'Günümüz',
-    facts: { role: 'Rol', focus: 'Odak', location: 'Konum', languages: 'Diller' },
+    facts: { role: 'Rol', focus: 'Odak', location: 'Konum', languages: 'Diller', military: 'Askerlik' },
     contactCta: 'İletişime geç',
     savePdf: 'PDF olarak kaydet',
     themeToggle: 'Açık / koyu tema',
@@ -56,6 +57,7 @@ export const ui: Record<Lang, UI> = {
     certifications: 'Sertifikalar',
     languages: 'Diller',
     native: 'Anadil',
+    basic: 'Temel seviye',
     contactTitle: 'Bir projen ya da açık bir pozisyon mu var?',
     contactAccent: 'Konuşalım.',
     contactLinks: { email: 'E-posta', github: 'GitHub', linkedin: 'LinkedIn', web: 'Web' },
@@ -79,7 +81,7 @@ export const ui: Record<Lang, UI> = {
     navLabel: 'Sections',
     openToWork: 'Open to new opportunities',
     present: 'Present',
-    facts: { role: 'Role', focus: 'Focus', location: 'Location', languages: 'Languages' },
+    facts: { role: 'Role', focus: 'Focus', location: 'Location', languages: 'Languages', military: 'Military service' },
     contactCta: 'Get in touch',
     savePdf: 'Save as PDF',
     themeToggle: 'Light / dark theme',
@@ -87,6 +89,7 @@ export const ui: Record<Lang, UI> = {
     certifications: 'Certifications',
     languages: 'Languages',
     native: 'Native',
+    basic: 'Basic',
     contactTitle: 'Have a project or an open role?',
     contactAccent: 'Let’s talk.',
     contactLinks: { email: 'Email', github: 'GitHub', linkedin: 'LinkedIn', web: 'Web' },

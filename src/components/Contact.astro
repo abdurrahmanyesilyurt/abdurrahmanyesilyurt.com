@@ -11,7 +11,11 @@ interface Props {
 const { lang, number } = Astro.props;
 const s = ui[lang];
 
-const withoutProtocol = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+// LinkedIn adresindeki "%C5%9F" gibi kodlanmış harfler okunur hâlde ("ş") gösterilsin
+const withoutProtocol = (url: string) =>
+  decodeURI(url)
+    .replace(/^https?:\/\/(www\.)?/, '')
+    .replace(/\/$/, '');
 
 interface ContactLink {
   label: string;
@@ -40,7 +44,7 @@ const links = [
 const site = Astro.site ? withoutProtocol(Astro.site.href) : '';
 ---
 
-<Section id={s.sections.contact.id} number={number} title={s.sections.contact.label}>
+<Section id={s.sections.contact.id} number={number} title={s.sections.contact.label} keepTogether>
   <p
     class="scroll-reveal font-serif text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.98] tracking-[-0.015em] text-balance print:hidden"
   >
