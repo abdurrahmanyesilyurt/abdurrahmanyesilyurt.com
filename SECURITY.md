@@ -10,11 +10,11 @@ Please include the affected URL or file, the steps to reproduce it and the impac
 I will acknowledge your report as soon as possible and keep you updated until it is resolved.
 
 The same contact is published in machine-readable form at
-[`/.well-known/security.txt`](https://abdurrahmanyesilyurt.com/.well-known/security.txt).
+[`/.well-known/security.txt`](https://www.abdurrahmanyesilyurt.com/.well-known/security.txt).
 
 ## Scope
 
-- https://abdurrahmanyesilyurt.com and all of its pages
+- https://www.abdurrahmanyesilyurt.com and all of its pages (the apex domain redirects there)
 - The source code in this repository
 
 The site is fully static: it has no user accounts, forms, cookies or server-side code.

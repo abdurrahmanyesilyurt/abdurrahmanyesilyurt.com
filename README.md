@@ -2,7 +2,7 @@
 
 # abdurrahmanyesilyurt.com
 
-Source code of my personal CV website — **[abdurrahmanyesilyurt.com](https://abdurrahmanyesilyurt.com)**
+Source code of my personal CV website — **[abdurrahmanyesilyurt.com](https://www.abdurrahmanyesilyurt.com)**
 
 [![CI](https://github.com/abdurrahmanyesilyurt/abdurrahmanyesilyurt.com/actions/workflows/ci.yml/badge.svg)](https://github.com/abdurrahmanyesilyurt/abdurrahmanyesilyurt.com/actions/workflows/ci.yml)
 ![Astro](https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white)
@@ -33,13 +33,13 @@ The site is static, but it is configured like a production application.
 | Area | What's in place |
 | --- | --- |
 | Content Security Policy | `default-src 'none'` without `'unsafe-inline'`: every script, style and font is served from the site's own origin. [`scripts/check-csp.mjs`](scripts/check-csp.mjs) fails CI if inline code ever appears in the build. |
-| HTTP headers | HSTS (2 years, preload-ready), `X-Frame-Options: DENY` with `frame-ancestors 'none'`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, COOP and CORP. See [`vercel.json`](vercel.json). |
+| HTTP headers | HSTS (2 years), `X-Frame-Options: DENY` with `frame-ancestors 'none'`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, COOP and CORP. See [`vercel.json`](vercel.json). |
 | Privacy | Fonts are bundled with the site. No analytics, trackers, cookies or third-party requests. |
 | Supply chain | Dependabot version and security updates, GitHub Actions pinned to commit SHAs, read-only workflow token. |
 | Code scanning | CodeQL analysis, secret scanning with push protection. |
 | Disclosure | [`SECURITY.md`](SECURITY.md) and [`/.well-known/security.txt`](public/.well-known/security.txt) (RFC 9116) with private vulnerability reporting. |
 
-Check it yourself on [securityheaders.com](https://securityheaders.com/?q=abdurrahmanyesilyurt.com&followRedirects=on) or [Mozilla Observatory](https://developer.mozilla.org/en-US/observatory/analyze?host=abdurrahmanyesilyurt.com).
+Check it yourself on [securityheaders.com](https://securityheaders.com/?q=www.abdurrahmanyesilyurt.com&followRedirects=on) or [Mozilla Observatory](https://developer.mozilla.org/en-US/observatory/analyze?host=www.abdurrahmanyesilyurt.com).
 
 ## Tech stack
 

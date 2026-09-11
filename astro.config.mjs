@@ -6,7 +6,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://abdurrahmanyesilyurt.com',
+  // Vercel'de ana domain www; kök domain buraya 308 ile yönlenir
+  site: 'https://www.abdurrahmanyesilyurt.com',
 
   // Türkçe varsayılan dil: / → Türkçe, /en/ → İngilizce
   i18n: {

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Personal CV website of Abdurrahman Yeşilyurt",
-  "homepage": "https://abdurrahmanyesilyurt.com",
+  "homepage": "https://www.abdurrahmanyesilyurt.com",
   "license": "MIT",
   "engines": {
     "node": ">=22.12.0"
