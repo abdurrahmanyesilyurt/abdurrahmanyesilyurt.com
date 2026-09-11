@@ -10,15 +10,19 @@ interface Props {
 
 const { lang, number } = Astro.props;
 const s = ui[lang];
+
+// Kısa kartlar baskıda iki sayfaya bölünmesin; çok uzun olanın bölünmesine izin ver.
+// (Karşılaştırma şablonda değil burada: astro check, şablondaki "<" işaretini etiket sanıyor.)
+const entries = cv.experience.map((job) => {
+  const highlights = job.highlights ? t(job.highlights, lang) : [];
+  return { job, highlights, keepTogether: highlights.length <= 6 };
+});
 ---
 
 <Section id={s.sections.experience.id} number={number} title={s.sections.experience.label}>
   <ol class="divide-y divide-rule">
     {
-      cv.experience.map((job) => {
-        const highlights = job.highlights ? t(job.highlights, lang) : [];
-        // Kısa kartlar baskıda iki sayfaya bölünmesin; çok uzun olanın bölünmesine izin ver
-        const keepTogether = highlights.length <= 6;
+      entries.map(({ job, highlights, keepTogether }) => {
         return (
           <li
             class:list={[
