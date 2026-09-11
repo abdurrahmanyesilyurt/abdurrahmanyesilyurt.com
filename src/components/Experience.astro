@@ -13,55 +13,110 @@ const s = ui[lang];
 
 // Kısa kartlar baskıda iki sayfaya bölünmesin; çok uzun olanın bölünmesine izin ver.
 // (Karşılaştırma şablonda değil burada: astro check, şablondaki "<" işaretini etiket sanıyor.)
-const entries = cv.experience.map((job) => {
+const entries = cv.experience.map((job, index) => {
   const highlights = job.highlights ? t(job.highlights, lang) : [];
-  return { job, highlights, keepTogether: highlights.length <= 6 };
+  return { job, highlights, keepTogether: highlights.length <= 6, isFirst: index === 0 };
 });
+
+const hasDetails = entries.some((entry) => entry.highlights.length > 0);
+
+// Kart başlığı grid'i: telefonda [içerik | +], geniş ekranda [tarih | içerik | +], baskıda [tarih | içerik].
+// <summary> içinde başlık doğrudan çocuk olmalı; bu yüzden satırlar ayrı ayrı yerleştiriliyor.
+const headerGrid =
+  'grid grid-cols-[1fr_auto] gap-x-4 sm:grid-cols-[10.5rem_1fr_auto] sm:gap-x-8 print:grid-cols-[9rem_1fr] print:gap-x-8';
+const contentCell = 'col-start-1 sm:col-start-2 print:col-start-2';
 ---
 
 <Section id={s.sections.experience.id} number={number} title={s.sections.experience.label}>
+  {
+    hasDetails && (
+      <button
+        slot="header-extra"
+        type="button"
+        data-expand-all
+        data-label-open={s.expandAll}
+        data-label-close={s.collapseAll}
+        aria-expanded="false"
+        class="mt-5 cursor-pointer font-mono text-[11px] tracking-[0.12em] text-ink-2 uppercase underline decoration-rule underline-offset-4 transition-colors hover:text-ink hover:decoration-ink print:hidden"
+      >
+        {s.expandAll}
+      </button>
+    )
+  }
+
   <ol class="divide-y divide-rule">
     {
-      entries.map(({ job, highlights, keepTogether }) => {
-        return (
-          <li
-            class:list={[
-              'scroll-reveal grid gap-x-8 gap-y-2 py-8 first:pt-0 sm:grid-cols-[10.5rem_1fr] print:grid-cols-[9rem_1fr] print:py-3',
-              keepTogether && 'print-break-avoid',
-            ]}
-          >
-            <p class="flex items-center gap-2 self-start pt-2 font-mono text-xs tracking-[0.1em] whitespace-nowrap text-ink-2 uppercase print:pt-1">
+      entries.map(({ job, highlights, keepTogether, isFirst }) => {
+        const expandable = highlights.length > 0;
+        const header = (
+          <>
+            <span class="col-start-1 row-start-1 flex items-center gap-2 self-start pt-2 font-mono text-xs tracking-[0.1em] whitespace-nowrap text-ink-2 uppercase sm:row-span-3 print:row-span-3 print:pt-1">
               {job.current && <span class="size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />}
               <time datetime={job.start}>{formatDate(job.start, lang)}</time>
               {(job.current || job.end) && <span aria-hidden="true">—</span>}
               {job.current ? <span>{s.present}</span> : job.end && <time datetime={job.end}>{formatDate(job.end, lang)}</time>}
-            </p>
-            <div>
-              <div class="print:break-inside-avoid print:break-after-avoid">
-                <h3 class="font-serif text-[1.75rem] leading-tight sm:text-[2rem] print:text-xl">{t(job.role, lang)}</h3>
-                <p class="mt-1 text-ink-2">
-                  {t(job.company, lang)}
-                  {job.location && (
-                    <>
-                      <span class="text-ink-3" aria-hidden="true">
-                        {' · '}
-                      </span>
-                      <span>{t(job.location, lang)}</span>
-                    </>
-                  )}
-                </p>
-                {job.detail && <p class="mt-1.5 font-mono text-[11px] tracking-[0.04em] text-ink-2">{t(job.detail, lang)}</p>}
-              </div>
-              {highlights.length > 0 && (
-                <ul class="mt-4 space-y-2 leading-relaxed text-ink-2 print:mt-1.5 print:space-y-0.5 print:leading-snug">
-                  {highlights.map((item) => (
-                    <li class="relative pl-5 before:absolute before:top-[0.8em] before:left-0 before:h-px before:w-2.5 before:bg-ink-3 print:break-inside-avoid">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+            </span>
+            <h3
+              class:list={[
+                contentCell,
+                'mt-2 font-serif text-[1.75rem] leading-tight transition-colors sm:row-start-1 sm:mt-0 sm:text-[2rem] print:row-start-1 print:mt-0 print:text-xl',
+                expandable && 'group-hover/summary:text-accent',
+              ]}
+            >
+              {t(job.role, lang)}
+            </h3>
+            <span class:list={[contentCell, 'mt-1 text-ink-2']}>
+              {t(job.company, lang)}
+              {job.location && (
+                <>
+                  <span class="text-ink-3" aria-hidden="true">
+                    {' · '}
+                  </span>
+                  <span>{t(job.location, lang)}</span>
+                </>
               )}
-            </div>
+            </span>
+            {job.detail && (
+              <span class:list={[contentCell, 'mt-1.5 font-mono text-[11px] tracking-[0.04em] text-ink-2']}>
+                {t(job.detail, lang)}
+              </span>
+            )}
+          </>
+        );
+
+        return (
+          <li class:list={['scroll-reveal', keepTogether && 'print-break-avoid']}>
+            {expandable ? (
+              <details data-expandable class="group">
+                <summary
+                  class:list={[
+                    headerGrid,
+                    'group/summary cursor-pointer list-none py-7 [&::-webkit-details-marker]:hidden print:py-2 print:break-inside-avoid print:break-after-avoid',
+                    isFirst && 'pt-0',
+                  ]}
+                >
+                  {header}
+                  {/* "+" açıkken 45° dönüp "×" olur */}
+                  <span
+                    aria-hidden="true"
+                    class="col-start-2 row-start-1 mt-1 grid size-8 place-items-center rounded-full border border-rule text-lg leading-none text-ink-2 transition group-open:rotate-45 group-hover/summary:border-ink group-hover/summary:text-ink sm:col-start-3 print:hidden"
+                  >
+                    +
+                  </span>
+                </summary>
+                <div class="grid gap-x-8 sm:grid-cols-[10.5rem_1fr] print:grid-cols-[9rem_1fr]">
+                  <ul class="space-y-2 pb-8 leading-relaxed text-ink-2 sm:col-start-2 print:col-start-2 print:space-y-0.5 print:pb-2 print:leading-snug">
+                    {highlights.map((item) => (
+                      <li class="relative pl-5 before:absolute before:top-[0.8em] before:left-0 before:h-px before:w-2.5 before:bg-ink-3 print:break-inside-avoid">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </details>
+            ) : (
+              <div class:list={[headerGrid, 'py-7 print:py-2', isFirst && 'pt-0']}>{header}</div>
+            )}
           </li>
         );
       })

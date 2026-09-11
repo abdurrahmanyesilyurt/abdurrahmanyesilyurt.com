@@ -6,6 +6,7 @@ Personal CV site for abdurrahmanyesilyurt.com — static Astro + Tailwind v4, de
 - `/` is Turkish (default locale), `/en/` is English. Both render `src/components/CVPage.astro`.
 - Colors are CSS tokens using `light-dark()` in `src/styles/global.css`; `data-theme` on `<html>` overrides the system theme.
 - The print stylesheet (`print:` variants + `@media print`) turns the page into a downloadable CV. Keep page breaks clean: short experience entries and short sections (`<Section keepTogether>`) use `print-break-avoid`; only long entries may split between bullets. In print, contact details sit under the name (Hero) and the Contact section is hidden.
+- Experience entries are native `<details data-expandable>` accordions (closed by default). `public/site.js` drives the "Expand all" button and opens every entry on `beforeprint` (restored on `afterprint`); a `::details-content` print rule is the fallback. Inside `<summary>` keep headings as direct children (no `div`/`p`).
 - Projects (`cv.projects`) only link public pages and store listings — never API, admin, staging or private repo URLs. QR codes are rendered at build time by `src/components/QrCode.astro` (uqr → one SVG path, no inline styles).
 - `vercel.json` sends a strict CSP (`default-src 'none'`, no `'unsafe-inline'`). Never add inline `<script>`, `<style>`, `style=""` attributes or `on*=` handlers — use Tailwind classes (e.g. `[--i:3]` for custom properties) and put client JS in `public/site.js`. `npm run check:csp` enforces this on the build output and runs in CI.
 

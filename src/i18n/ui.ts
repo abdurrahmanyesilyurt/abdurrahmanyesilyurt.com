@@ -15,6 +15,8 @@ interface UI {
   navLabel: string;
   openToWork: string;
   present: string;
+  expandAll: string;
+  collapseAll: string;
   facts: { role: string; focus: string; location: string; languages: string; military: string };
   contactCta: string;
   savePdf: string;
@@ -51,6 +53,8 @@ export const ui: Record<Lang, UI> = {
     navLabel: 'Bölümler',
     openToWork: 'Yeni fırsatlara açığım',
     present: 'Günümüz',
+    expandAll: 'Tümünü aç',
+    collapseAll: 'Tümünü kapat',
     facts: { role: 'Rol', focus: 'Odak', location: 'Konum', languages: 'Diller', military: 'Askerlik' },
     contactCta: 'İletişime geç',
     savePdf: 'PDF olarak kaydet',
@@ -85,6 +89,8 @@ export const ui: Record<Lang, UI> = {
     navLabel: 'Sections',
     openToWork: 'Open to new opportunities',
     present: 'Present',
+    expandAll: 'Expand all',
+    collapseAll: 'Collapse all',
     facts: { role: 'Role', focus: 'Focus', location: 'Location', languages: 'Languages', military: 'Military service' },
     contactCta: 'Get in touch',
     savePdf: 'Save as PDF',
