@@ -6,6 +6,7 @@ Personal CV site for abdurrahmanyesilyurt.com — static Astro + Tailwind v4, de
 - `/` is Turkish (default locale), `/en/` is English. Both render `src/components/CVPage.astro`.
 - Colors are CSS tokens using `light-dark()` in `src/styles/global.css`; `data-theme` on `<html>` overrides the system theme.
 - Keep the print stylesheet (`print:` variants + `@media print`) fitting on one A4 page.
+- `vercel.json` sends a strict CSP (`default-src 'none'`, no `'unsafe-inline'`). Never add inline `<script>`, `<style>`, `style=""` attributes or `on*=` handlers — use Tailwind classes (e.g. `[--i:3]` for custom properties) and put client JS in `public/site.js`. `npm run check:csp` enforces this on the build output and runs in CI.
 
 ## Development
 

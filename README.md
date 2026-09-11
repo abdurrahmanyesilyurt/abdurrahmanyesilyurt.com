@@ -1,30 +1,88 @@
+<div align="center">
+
 # abdurrahmanyesilyurt.com
 
-Kişisel CV sitesi. [Astro](https://astro.build) + Tailwind CSS ile yazılmış statik bir site; Vercel'de ücretsiz barınır.
+Source code of my personal CV website — **[abdurrahmanyesilyurt.com](https://abdurrahmanyesilyurt.com)**
 
-- `/` → Türkçe, `/en/` → İngilizce
-- Açık / koyu tema, Ctrl+P ile tek sayfalık PDF CV çıktısı
-- Fontlar build sırasında indirilip siteyle birlikte sunulur (çalışma anında Google'a istek gitmez)
+[![CI](https://github.com/abdurrahmanyesilyurt/abdurrahmanyesilyurt.com/actions/workflows/ci.yml/badge.svg)](https://github.com/abdurrahmanyesilyurt/abdurrahmanyesilyurt.com/actions/workflows/ci.yml)
+[![Mozilla Observatory](https://img.shields.io/mozilla-observatory/grade/abdurrahmanyesilyurt.com?publish&label=security%20headers)](https://developer.mozilla.org/en-US/observatory/analyze?host=abdurrahmanyesilyurt.com)
+![Astro](https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2f7d4f)](LICENSE)
 
-## Geliştirme
+</div>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/screenshot-dark.png">
+  <img alt="The homepage of abdurrahmanyesilyurt.com" src=".github/assets/screenshot-light.png">
+</picture>
+
+## Features
+
+- **Bilingual.** Turkish at `/`, English at `/en/`, with `hreflang` alternates and a sitemap.
+- **One content file.** All CV data lives in a typed [`src/data/cv.ts`](src/data/cv.ts); both languages sit side by side.
+- **Print-ready.** <kbd>Ctrl</kbd>+<kbd>P</kbd> (or the download button) produces a clean, one-page A4 PDF of the CV.
+- **Light and dark themes** that follow the system setting, with a manual toggle.
+- **Static and fast.** No client-side framework; the only JavaScript is a sub-1 KB theme toggle.
+- **Accessible.** Semantic HTML, skip link, visible focus states and `prefers-reduced-motion` support.
+- **Search- and share-friendly.** Canonical URLs, Open Graph image and schema.org `Person` data.
+
+## Security
+
+The site is static, but it is configured like a production application.
+
+| Area | What's in place |
+| --- | --- |
+| Content Security Policy | `default-src 'none'` without `'unsafe-inline'`: every script, style and font is served from the site's own origin. [`scripts/check-csp.mjs`](scripts/check-csp.mjs) fails CI if inline code ever appears in the build. |
+| HTTP headers | HSTS (2 years, preload-ready), `X-Frame-Options: DENY` with `frame-ancestors 'none'`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, COOP and CORP. See [`vercel.json`](vercel.json). |
+| Privacy | Fonts are bundled with the site. No analytics, trackers, cookies or third-party requests. |
+| Supply chain | Dependabot version and security updates, GitHub Actions pinned to commit SHAs, read-only workflow token. |
+| Code scanning | CodeQL analysis, secret scanning with push protection. |
+| Disclosure | [`SECURITY.md`](SECURITY.md) and [`/.well-known/security.txt`](public/.well-known/security.txt) (RFC 9116) with private vulnerability reporting. |
+
+Check it yourself on [securityheaders.com](https://securityheaders.com/?q=abdurrahmanyesilyurt.com&followRedirects=on) or [Mozilla Observatory](https://developer.mozilla.org/en-US/observatory/analyze?host=abdurrahmanyesilyurt.com).
+
+## Tech stack
+
+[Astro 7](https://astro.build) (static output) · [Tailwind CSS 4](https://tailwindcss.com) · TypeScript · [Fontsource](https://fontsource.org) (Instrument Serif, Instrument Sans, IBM Plex Mono) · [Vercel](https://vercel.com) · GitHub Actions
+
+## Project structure
+
+```text
+src/
+├── data/cv.ts           # all CV content (TR + EN)
+├── i18n/ui.ts           # interface strings
+├── components/          # page sections (Hero, Experience, Skills, ...)
+├── layouts/Base.astro   # <head>: meta tags, fonts, structured data
+├── pages/               # / (Turkish), /en/ (English), 404
+└── styles/global.css    # design tokens, animations, print styles
+public/
+├── site.js              # theme toggle — the only script on the site
+└── .well-known/security.txt
+scripts/check-csp.mjs    # CI guard for the Content Security Policy
+vercel.json              # security headers and caching
+```
+
+## Local development
+
+Requires Node.js 22.12 or newer.
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321
-npm run build    # dist/ klasörüne statik çıktı
-npx astro check  # tip kontrolü
+npm run dev         # http://localhost:4321
+npm run check       # type-check
+npm run build       # static output in dist/
+npm run check:csp   # make sure the build works under the strict CSP
 ```
 
-## İçeriği güncelleme
+## Updating the CV
 
-Tüm CV içeriği tek dosyada: [`src/data/cv.ts`](src/data/cv.ts). Deneyim, proje, yetenek, eğitim ve iletişim bilgilerini buradan düzenle; iki dildeki metinler yan yana durur. Arayüz metinleri (menü, başlıklar) [`src/i18n/ui.ts`](src/i18n/ui.ts) içinde.
+Edit [`src/data/cv.ts`](src/data/cv.ts). Each text field is either a plain string (the same in both languages) or a `{ tr, en }` pair. Adding an entry to `projects` makes the Projects section appear automatically.
 
-`projects` dizisine proje eklediğinde "Projeler" bölümü kendiliğinden görünür.
+## Deployment
 
-## Yayına alma (Vercel)
+Vercel builds and deploys every push to `main`, and every pull request gets a preview deployment. Headers and caching rules live in [`vercel.json`](vercel.json).
 
-1. Kodu GitHub'a gönder.
-2. [vercel.com](https://vercel.com) → **Add New → Project** → bu repoyu seç → **Deploy**. Astro otomatik tanınır, ek ayar gerekmez.
-3. Proje → **Settings → Domains** → `abdurrahmanyesilyurt.com` ve `www.abdurrahmanyesilyurt.com` ekle. Vercel'in gösterdiği DNS kayıtlarını (A ve CNAME) domain firmasının panelinde gir.
+## License
 
-Bundan sonra `main` dalına her push otomatik olarak yayına çıkar.
+The code is available under the [MIT License](LICENSE). The CV content in `src/data/cv.ts` and all personal information are © Abdurrahman Yeşilyurt and are not covered by the license.
