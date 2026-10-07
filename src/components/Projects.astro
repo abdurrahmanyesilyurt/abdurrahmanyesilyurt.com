@@ -13,23 +13,44 @@ interface Props {
 const { lang, number } = Astro.props;
 const s = ui[lang];
 
-const projects = cv.projects.map((project) => ({
-  project,
-  links: (project.links ?? []).map((link) => ({
-    href: link.url,
-    label: link.label ? t(link.label, lang) : s.projectLinks[link.type],
-    // Baskıda linkler tıklanamadığı için adresin kendisi yazılır
-    printText: link.type === 'web' ? displayUrl(link.url) : s.projectLinks[link.type],
-  })),
-}));
+// Geniş (featured) kart iki sütunu kaplar; diğerleri sırayla sola/sağa dizilir. Sütun iç boşluğu
+// odd/even ile verilemez: geniş karttan sonra sıra kayar.
+let column: 'left' | 'right' = 'left';
+const projects = cv.projects.map((project) => {
+  let placement: 'full' | 'left' | 'right' = 'full';
+  if (project.featured) {
+    column = 'left';
+  } else {
+    placement = column;
+    column = column === 'left' ? 'right' : 'left';
+  }
+  return {
+    project,
+    placement,
+    links: (project.links ?? []).map((link) => ({
+      href: link.url,
+      label: link.label ? t(link.label, lang) : s.projectLinks[link.type],
+      // Baskıda linkler tıklanamadığı için adresin kendisi yazılır
+      printText: link.type === 'web' ? displayUrl(link.url) : s.projectLinks[link.type],
+    })),
+  };
+});
 ---
 
 <Section id={s.sections.projects.id} number={number} title={s.sections.projects.label}>
   <!-- Baskıda gri "gap" zemini kullanılmaz: sayfa sonunda boş kalan hücre gri blok gibi görünür -->
   <ul class="grid gap-px border-y border-rule bg-rule md:grid-cols-2 print:grid-cols-2 print:gap-0 print:border-b-0 print:bg-transparent">
     {
-      projects.map(({ project, links }) => (
-        <li class="scroll-reveal print-break-avoid flex flex-col gap-5 bg-paper py-8 md:odd:pr-8 md:even:pl-8 print:gap-1.5 print:border-b print:border-rule print:py-3 print:odd:pr-4 print:even:pl-4">
+      projects.map(({ project, placement, links }) => (
+        <li
+          class:list={[
+            'scroll-reveal print-break-avoid flex flex-col gap-5 bg-paper py-8 print:gap-1.5 print:border-b print:border-rule print:py-3 print:odd:pr-4 print:even:pl-4',
+            // Baskıda geniş kart yok: yer kaplar, boş kalan hücre de baskıda gri görünmez
+            placement === 'full' && 'md:col-span-2 print:col-span-1',
+            placement === 'left' && 'md:pr-8 print:pr-0',
+            placement === 'right' && 'md:pl-8 print:pl-0',
+          ]}
+        >
           <div class="flex items-start gap-4">
             {project.icon && (
               <Image

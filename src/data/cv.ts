@@ -7,6 +7,7 @@
  */
 import type { ImageMetadata } from 'astro';
 import type { Lang } from '../i18n/ui';
+import ecoasistanIcon from '../assets/projects/ecoasistan.png';
 import ecoyazilimIcon from '../assets/projects/ecoyazilim.png';
 import ekonazKarbonIcon from '../assets/projects/ekonaz-karbon.png';
 import nakliyekoopIcon from '../assets/projects/nakliyekoop.png';
@@ -50,6 +51,8 @@ export interface Project {
   qr?: { url: string; label: Localized };
   /** src/assets/projects altından import edilen ikon */
   icon?: ImageMetadata;
+  /** Öne çıkan proje: iki sütunu kaplayan geniş kart olur */
+  featured?: boolean;
 }
 
 export interface SkillItem {
@@ -112,8 +115,8 @@ export const cv: CV = {
     en: 'Backend & Full-Stack Software Developer',
   },
   summary: {
-    tr: 'ASP.NET Core ve PostgreSQL tabanlı backend sistemler geliştiren, aynı zamanda Next.js ve React Native ile web ve mobil istemci tarafında da üretim yapabilen bir bilgisayar mühendisiyim. Hem tam zamanlı hem serbest projelerde farklı sektörlerden firmalara uçtan uca çözümler ürettim; API geliştirmeden veritabanı tasarımına, frontend entegrasyonundan bulut üzerinde dağıtıma ve CI/CD otomasyonuna kadar geniş bir yelpazede sorumluluk aldım.',
-    en: 'Computer engineer building backend systems on ASP.NET Core and PostgreSQL, and equally comfortable on the web and mobile client side with Next.js and React Native. Delivered end-to-end solutions for companies in a range of industries, both in full-time roles and as a freelancer — covering API development, database design, frontend integration, cloud deployment, and CI/CD automation.',
+    tr: 'ASP.NET Core, NestJS ve PostgreSQL ile backend sistemler; Next.js ve React Native (Expo) ile web ve mobil istemciler geliştiren bir bilgisayar mühendisiyim. Farklı sektörlerden firmalar için geliştirdiğim ürünler web’de, App Store’da ve Google Play’de canlıda; son olarak Claude API ile e-postalardan randevu, görev ve son tarih çıkaran yapay zekâ destekli asistan ürünüm Ecoasistan’ı yayına aldım. API ve veritabanı tasarımından kimlik doğrulama, bulut dağıtımı ve CI/CD otomasyonuna kadar uçtan uca sorumluluk alırım.',
+    en: 'Computer engineer building backend systems with ASP.NET Core, NestJS and PostgreSQL, and web and mobile clients with Next.js and React Native (Expo). Products I have built for companies across several industries are live on the web, the App Store and Google Play; most recently I launched Ecoasistan, my own AI-powered assistant that uses the Claude API to extract appointments, tasks and deadlines from email. I take end-to-end ownership, from API and database design to authentication, cloud deployment and CI/CD automation.',
   },
   location: 'Kocaeli, Türkiye',
   focus: ['.NET', 'PostgreSQL', 'Next.js', 'React Native'],
@@ -139,28 +142,18 @@ export const cv: CV = {
       current: true,
       highlights: {
         tr: [
-          'Dijitalleşme ihtiyacı olan birden fazla firma için uçtan uca backend çözümleri tasarladım ve hayata geçirdim; gereksinim analizinden canlı ortama alımına kadar süreci tek başıma yönettim.',
-          'ASP.NET Core 8 ile kurumsal Web API’lar geliştirdim; katmanlı mimari, bağımlılık enjeksiyonu, DTO ve temiz kod ilkelerini tutarlı şekilde uyguladım.',
-          'PostgreSQL şeması tasarlayıp EF Core Code-First yaklaşımıyla migration’ları yönettim; canlı veritabanlarında sorgu performansını ölçüp optimize ettim.',
-          'JWT ve HTTP-only cookie tabanlı kimlik doğrulama, refresh token rotasyonu ile token bağlama (IP, UserAgent) akışlarını kurguladım; rol ve izin bazlı çok kiracılı yetkilendirme modeli tasarladım.',
-          'Gerçek zamanlı bildirim altyapıları için SignalR kullandım; SMTP sağlayıcıları üzerinden şablonlu e-posta entegrasyonları gerçekleştirdim.',
-          'Ubuntu sunucuda Docker ile container bazlı dağıtım, Nginx reverse proxy, SSL sertifika kurulumu ve sistem bakımı süreçlerini yürüttüm.',
-          'GitHub Actions ile CI/CD hattı tasarladım; imaj yayını ve otomatik SSH deploy akışı kurarak her push ile güvenli yayın alınmasını sağladım.',
-          'Aynı backend’i tüketen birden fazla web istemcisi (Next.js 15, React, TypeScript, TanStack Query, Tailwind CSS) ve React Native (Expo) tabanlı mobil uygulama geliştirip sürdürdüm; uçtan uca full-stack sorumluluk aldım.',
-          'Ortak projelerde frontend ekipleri için DTO sözleşmeleri, API dokümantasyonu ve migration rehberleri hazırlayarak entegrasyonu kolaylaştırdım.',
-          'Canlı ortamda çıkan hataları sunucu logları üzerinden teşhis edip müdahale ettim; kullanıcı geri bildirimleri doğrultusunda sürekli iyileştirme yaptım.',
+          'Dijitalleşme ihtiyacı olan firmalar için uçtan uca ürünler tasarlayıp canlıya aldım (bkz. Projeler). ASP.NET Core 8 ve NestJS ile katmanlı Web API’lar geliştirdim; PostgreSQL şemalarını EF Core ve Prisma migration’larıyla yönetip sorgu performansını optimize ettim.',
+          'JWT ve HTTP-only cookie tabanlı kimlik doğrulama, refresh token rotasyonu ile token bağlama (IP, UserAgent) ve rol/izin bazlı çok kiracılı yetkilendirme kurguladım; SignalR/Socket.IO ile gerçek zamanlı güncellemeler, FCM/APNs ve Web Push bildirimleri, SMTP e-posta entegrasyonları geliştirdim.',
+          'Ubuntu sunucularda Docker, Nginx reverse proxy ve SSL ile dağıtım yaptım; GitHub Actions ile test, imaj yayını, otomatik deploy, migration ve sağlık kontrolü içeren, başarısızlıkta önceki sürüme dönen CI/CD hatları kurdum.',
+          'Next.js, React, TanStack Query ve Tailwind CSS ile web istemcileri; React Native (Expo) ile App Store ve Google Play’de yayında olan mobil uygulamalar geliştirdim, EAS ile OTA güncelleme akışı kurdum.',
+          'Frontend ekipleri için DTO sözleşmeleri ve API dokümantasyonu hazırladım; canlı ortam hatalarını sunucu loglarından teşhis edip giderdim.',
         ],
         en: [
-          'Designed and delivered end-to-end backend solutions for multiple companies pursuing digital transformation; owned the process from requirements analysis through production rollout.',
-          'Built enterprise Web APIs with ASP.NET Core 8, applying layered architecture, dependency injection, DTO patterns, and clean code principles consistently.',
-          'Designed PostgreSQL schemas and managed migrations with EF Core Code-First; profiled and optimized query performance on live databases.',
-          'Implemented JWT and HTTP-only cookie authentication, refresh token rotation with token binding (IP, UserAgent), and a role- and permission-based multi-tenant authorization model.',
-          'Built real-time notification infrastructure with SignalR and integrated transactional email flows through SMTP providers with templated content.',
-          'Operated Ubuntu servers with Docker container-based deployment, Nginx reverse proxy, SSL certificate setup, and ongoing system maintenance.',
-          'Designed a CI/CD pipeline with GitHub Actions; published container images and automated SSH deploy so every push triggers a safe release.',
-          'Developed and maintained multiple web clients (Next.js 15, React, TypeScript, TanStack Query, Tailwind CSS) and a React Native (Expo) mobile app consuming the same backend — taking full-stack ownership end to end.',
-          'Coordinated with frontend teams on joint projects by preparing DTO contracts, API documentation, and migration guides to streamline integration.',
-          'Diagnosed production issues through server logs and iterated on improvements based on user feedback.',
+          'Designed and shipped end-to-end products for companies pursuing digital transformation (see Projects). Built layered Web APIs with ASP.NET Core 8 and NestJS; managed PostgreSQL schemas through EF Core and Prisma migrations and optimized query performance.',
+          'Implemented JWT and HTTP-only cookie authentication, refresh token rotation with token binding (IP, UserAgent), and role/permission-based multi-tenant authorization; built real-time updates with SignalR/Socket.IO, FCM/APNs and Web Push notifications, and SMTP email integrations.',
+          'Deployed on Ubuntu servers with Docker, Nginx reverse proxy and SSL; built GitHub Actions CI/CD pipelines covering tests, image publishing, automated deploys, migrations and health checks, with automatic rollback.',
+          'Built web clients with Next.js, React, TanStack Query and Tailwind CSS, and React Native (Expo) mobile apps live on the App Store and Google Play; set up over-the-air updates with EAS.',
+          'Prepared DTO contracts and API documentation for frontend teams; diagnosed and fixed production issues from server logs.',
         ],
       },
     },
@@ -231,6 +224,24 @@ export const cv: CV = {
 
   // Sadece herkese açık adresler: API, yönetim paneli ve test ortamı linkleri buraya girmez.
   projects: [
+    {
+      name: 'Ecoasistan',
+      category: { tr: 'Yapay zekâ · Verimlilik', en: 'AI · Productivity' },
+      platforms: ['Web'],
+      description: {
+        tr: 'Gmail ve Google Takvim’i okuyup randevuları, görevleri ve son tarihleri tek bir günlük akışta toplayan yapay zekâ destekli asistan: takvim önerileri, üç tonda yanıt taslakları, asistan sohbeti ve günün özeti bildirimi. Takvime yazma ve mail gönderme yalnızca kullanıcı onayıyla yapılır.',
+        en: 'AI-powered assistant that reads Gmail and Google Calendar and gathers appointments, tasks and deadlines into a single daily feed: calendar suggestions, reply drafts in three tones, an assistant chat and a daily summary notification. Writing to the calendar or sending email only happens with the user’s approval.',
+      },
+      role: {
+        tr: 'Kendi ürünüm. pnpm monorepo mimarisi (NestJS + Prisma API, Next.js web, yayına hazırlanan Expo mobil uygulaması); Claude API ile sınıflandırma → çıkarım hattı (Zod şema doğrulaması, dayanak cümlesi kontrolü, prompt injection’a karşı araçsız model); modelden önce çalışan kural tabanlı ayrıştırıcılar; Gmail, Takvim ve Outlook entegrasyonları; KVKK uyumu ve Docker + GitHub Actions ile otomatik deploy.',
+        en: 'My own product. The pnpm monorepo architecture (NestJS + Prisma API, Next.js web app, an upcoming Expo mobile app); a classification → extraction pipeline on the Claude API (Zod schema validation, source-quote checks, a tool-less model against prompt injection); rule-based parsers that run before the model; Gmail, Calendar and Outlook integrations; KVKK compliance and automated deploys with Docker and GitHub Actions.',
+      },
+      tech: ['NestJS', 'Prisma', 'PostgreSQL', 'Claude API', 'Zod', 'Next.js 16', 'React Native (Expo)', 'Docker', 'GitHub Actions'],
+      links: [{ type: 'web', url: 'https://ecoasistan.com' }],
+      qr: { url: 'https://ecoasistan.com', label: { tr: 'Siteyi aç', en: 'Open site' } },
+      icon: ecoasistanIcon,
+      featured: true,
+    },
     {
       name: 'EcoYazılım',
       category: { tr: 'Kurumsal yönetim', en: 'Business management' },
@@ -324,7 +335,10 @@ export const cv: CV = {
         { label: '.NET 8', icon: 'dotnet', core: true },
         { label: 'Entity Framework Core', icon: 'dotnet', core: true },
         { label: 'SignalR', icon: 'dotnet' },
+        { label: 'NestJS', icon: 'nestjs' },
         { label: 'Node.js', icon: 'nodedotjs' },
+        { label: 'Prisma', icon: 'prisma' },
+        { label: 'Socket.IO', icon: 'socketdotio' },
         'Web API',
         'REST',
         'LINQ',
@@ -353,11 +367,12 @@ export const cv: CV = {
     {
       name: 'Frontend',
       items: [
-        { label: 'Next.js 15', icon: 'nextdotjs', core: true },
+        { label: 'Next.js 15/16', icon: 'nextdotjs', core: true },
         { label: 'React', icon: 'react' },
         { label: 'TypeScript', icon: 'typescript' },
         { label: 'TanStack Query', icon: 'reactquery' },
         { label: 'Tailwind CSS', icon: 'tailwindcss' },
+        { label: 'Astro', icon: 'astro' },
         { label: 'HTML', icon: 'html5' },
         { label: 'CSS', icon: 'css' },
       ],
@@ -371,14 +386,41 @@ export const cv: CV = {
       ],
     },
     {
+      name: { tr: 'Yapay Zekâ', en: 'AI' },
+      items: [
+        { label: 'Claude API', icon: 'claude' },
+        { label: 'Zod', icon: 'zod' },
+        { tr: 'LLM ile yapılandırılmış veri çıkarımı', en: 'Structured data extraction with LLMs' },
+        { tr: 'Prompt injection’a karşı tasarım', en: 'Prompt-injection-resistant design' },
+        { tr: 'Model maliyeti takibi', en: 'Model cost tracking' },
+      ],
+    },
+    {
       name: { tr: 'Kimlik ve Güvenlik', en: 'Identity & Security' },
       items: [
         { label: 'JWT', icon: 'jsonwebtokens' },
         { label: 'ASP.NET Core Identity', icon: 'dotnet' },
+        'OAuth 2.0',
         'Cookie Authentication',
         { tr: 'Refresh token rotasyonu', en: 'Refresh token rotation' },
         { tr: 'Rol ve izin tabanlı yetkilendirme', en: 'Role- and permission-based authorization' },
         { tr: 'Çok kiracılı (multi-tenant) mimari', en: 'Multi-tenant architecture' },
+        { tr: 'AES-GCM ile token şifreleme', en: 'AES-GCM token encryption' },
+        { tr: 'CSP ve güvenlik başlıkları', en: 'CSP and security headers' },
+      ],
+    },
+    {
+      name: { tr: 'Entegrasyonlar', en: 'Integrations' },
+      items: [
+        { label: 'Gmail API', icon: 'gmail' },
+        { label: 'Google Calendar API', icon: 'googlecalendar' },
+        'Microsoft Graph',
+        { label: 'Firebase Cloud Messaging', icon: 'firebase' },
+        'APNs',
+        'Web Push',
+        'PayTR',
+        { tr: 'E-fatura', en: 'E-invoicing' },
+        { tr: 'SMTP entegrasyonları', en: 'SMTP integrations' },
       ],
     },
     {
@@ -388,8 +430,10 @@ export const cv: CV = {
         { label: 'Nginx', icon: 'nginx' },
         { label: 'Ubuntu Server', icon: 'ubuntu' },
         { label: 'GitHub Actions (CI/CD)', icon: 'githubactions' },
+        { label: 'Vercel', icon: 'vercel' },
         'AWS EC2',
         'AWS S3',
+        'AWS Lightsail',
         { tr: 'SSL ve alan adı yönetimi', en: 'SSL and domain management' },
       ],
     },
@@ -398,6 +442,8 @@ export const cv: CV = {
       items: [
         { label: 'Git', icon: 'git' },
         { label: 'GitHub', icon: 'github' },
+        { label: 'pnpm', icon: 'pnpm' },
+        { label: 'Vitest', icon: 'vitest' },
         { label: 'Swagger/OpenAPI', icon: 'swagger' },
         { label: 'Postman', icon: 'postman' },
         { label: 'Rider', icon: 'rider' },
@@ -409,7 +455,7 @@ export const cv: CV = {
       name: { tr: 'Diğer', en: 'Other' },
       items: [
         { tr: 'QuestPDF (PDF üretimi)', en: 'QuestPDF (PDF generation)' },
-        { tr: 'SMTP entegrasyonları', en: 'SMTP integrations' },
+        { tr: 'NCalc (formül motoru)', en: 'NCalc (formula engine)' },
         { label: { tr: 'Python ile veri işleme', en: 'Python for data processing' }, icon: 'python' },
         { label: { tr: 'Bluetooth Low Energy entegrasyonu', en: 'Bluetooth Low Energy integration' }, icon: 'bluetooth' },
       ],
