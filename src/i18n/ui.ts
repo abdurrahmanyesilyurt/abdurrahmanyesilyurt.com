@@ -14,6 +14,10 @@ interface UI {
   skipToContent: string;
   navLabel: string;
   openToWork: string;
+  /** 3D sahne: portre noktasının etiketi ve portreden masaya dönüş düğmesi */
+  scene: { portrait: string; back: string };
+  /** Yetenekler'deki fizikli logo havuzunun ipucu */
+  poolHint: string;
   present: string;
   expandAll: string;
   collapseAll: string;
@@ -68,6 +72,8 @@ export const ui: Record<Lang, UI> = {
     skipToContent: 'İçeriğe geç',
     navLabel: 'Bölümler',
     openToWork: 'Yeni fırsatlara açığım',
+    scene: { portrait: 'Portre', back: 'Bilgisayara dön' },
+    poolHint: 'Logoları tut, sürükle, fırlat',
     present: 'Günümüz',
     expandAll: 'Tümünü aç',
     collapseAll: 'Tümünü kapat',
@@ -119,6 +125,8 @@ export const ui: Record<Lang, UI> = {
     skipToContent: 'Skip to content',
     navLabel: 'Sections',
     openToWork: 'Open to new opportunities',
+    scene: { portrait: 'Portrait', back: 'Back to the desk' },
+    poolHint: 'Grab, drag and throw the logos',
     present: 'Present',
     expandAll: 'Expand all',
     collapseAll: 'Collapse all',

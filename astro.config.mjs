@@ -28,6 +28,12 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    // Astro küçük <script>'leri HTML'e gömer; CSP (script-src 'self') için hepsi ayrı dosya olsun.
+    // 3D sahne (three.js) ve fizik motoru zaten tembel yüklenen ayrı parçalar; uyarı sınırı ona göre.
+    build: {
+      assetsInlineLimit: 0,
+      chunkSizeWarningLimit: 700,
+    },
   },
 
   integrations: [

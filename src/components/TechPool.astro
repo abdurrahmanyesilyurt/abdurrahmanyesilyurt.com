@@ -1,0 +1,68 @@
+---
+// Fizikli logo havuzu: yeteneklerdeki tüm logolar (aynı logo bir kez, önce ana odak olanlar).
+// JS/fizik yokken ya da "hareketi azalt" açıkken logolar kutunun dibinde düzgün bir yığın olarak durur.
+// Süs öğesidir (aria-hidden): yeteneklerin okunabilir listesi hemen altındaki kartlarda.
+import TechIcon from './TechIcon.astro';
+import { cv, t, toSkillItem } from '../data/cv';
+import { brandIcon, type BrandIcon } from '../lib/icons';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const s = ui[lang];
+const MOBILE_LIMIT = 24;
+
+const all = cv.skills.flatMap((group) => group.items.map(toSkillItem));
+const logos: { icon: BrandIcon; label: string; core: boolean }[] = [];
+for (const item of [...all.filter((i) => i.core), ...all.filter((i) => !i.core)]) {
+  const icon = brandIcon(item.icon);
+  if (icon && !logos.some((logo) => logo.icon.path === icon.path)) logos.push({ icon, label: t(item.label, lang), core: Boolean(item.core) });
+}
+---
+
+<div
+  data-tech-pool
+  aria-hidden="true"
+  class="tech-pool relative mb-4 h-[320px] touch-pan-y overflow-hidden rounded-2xl border border-rule bg-paper-2 select-none sm:h-[380px] print:hidden"
+>
+  <p class="pointer-events-none absolute top-4 left-5 z-10 font-mono text-[10px] tracking-[0.16em] text-ink-3 uppercase">
+    {s.poolHint}
+  </p>
+  <div class="flex h-full flex-wrap content-end justify-center gap-1.5 p-4 pt-12">
+    {
+      logos.map((logo, i) => (
+        <span
+          data-pool-item
+          title={logo.label}
+          class:list={[
+            'pool-item block rounded-full',
+            logo.core ? 'size-16 ring-2 ring-accent' : 'size-12',
+            i >= MOBILE_LIMIT && 'max-sm:hidden',
+          ]}
+        >
+          <TechIcon icon={logo.icon} class="pointer-events-none block size-full" />
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  // Havuz ekrana yaklaşınca fizik motoru ayrı bir dosya olarak yüklenir
+  const pool = document.querySelector<HTMLElement>('[data-tech-pool]');
+  if (pool && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(
+      async ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        const { startPool } = await import('../scripts/tech-pool');
+        startPool(pool);
+      },
+      { rootMargin: '0px 0px -25% 0px' },
+    );
+    observer.observe(pool);
+  }
+</script>

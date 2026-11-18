@@ -1,7 +1,9 @@
 ---
-import { Picture } from 'astro:assets';
-import { cv, displayUrl, t } from '../data/cv';
+import { Picture, getImage } from 'astro:assets';
+import { cv, displayUrl, t, toSkillItem } from '../data/cv';
+import { brandIcon, type BrandIcon } from '../lib/icons';
 import { ui, type Lang } from '../i18n/ui';
+import type { SceneAction, SceneData } from '../scripts/hero-scene';
 
 interface Props {
   lang: Lang;
@@ -21,7 +23,6 @@ const spoken = cv.languages
   .map((l) => (l.level === 'native' ? t(l.name, lang) : `${t(l.name, lang)} (${l.level})`))
   .join(' · ');
 
-// Unvan artık ismin hemen altında; bilgi şeridinde tekrar edilmez
 const facts = [
   { label: s.facts.focus, value: cv.focus.join(' · ') },
   { label: s.facts.location, value: t(cv.location, lang) },
@@ -37,113 +38,83 @@ const printContacts = [
   Astro.site && displayUrl(Astro.site.href),
 ].filter((item): item is string => Boolean(item));
 
-// Portrenin köşesindeki dönen rozet: unvan çemberin etrafına yazılır (Türkçe büyük harf kuralıyla)
-const stamp = `${title.toLocaleUpperCase(lang === 'tr' ? 'tr-TR' : 'en-US')} • `;
+// 3D sahnenin verisi: masadaki çerçeve için küçük bir portre, etrafta dönen logolar (önce ana odak
+// olanlar, aynı logo bir kez) ve dizüstü ekranında yazılan koddaki bilgiler. data-scene ile gider.
+const skillItems = cv.skills.flatMap((group) => group.items.map(toSkillItem));
+const sceneIcons: BrandIcon[] = [];
+for (const item of [...skillItems.filter((i) => i.core), ...skillItems.filter((i) => !i.core)]) {
+  const icon = brandIcon(item.icon);
+  if (icon && !sceneIcons.some((other) => other.path === icon.path)) sceneIcons.push(icon);
+  if (sceneIcons.length === 7) break;
+}
+const scenePortrait = photo ? (await getImage({ src: photo.src, width: 640, format: 'webp' })).src : '';
 
-// --name: ismin punto büyüklüğü. Geniş ekranda portre ikinci satırın ("Yeşilyurt") hizasından başlar;
-// punto, italik soyadı (≈2.93em) portrenin solundaki 7 sütuna sığacak şekilde ekran genişliğine göre hesaplanır.
+// Sahnedeki nesneler ve gittikleri yer: çerçeve portreyi öne getirir, diğerleri bölümlere götürür.
+// Her nesnenin üstünde, sahneyle birlikte hareket eden bir nokta (düğme/link) var; klavyeyle de çalışır.
+const sceneLinks: { action: SceneAction; label: string; href?: string }[] = [
+  { action: 'portrait', label: s.scene.portrait },
+  { action: 'projects', label: s.sections.projects.label, href: `#${s.sections.projects.id}` },
+  { action: 'skills', label: s.sections.skills.label, href: `#${s.sections.skills.id}` },
+  { action: 'experience', label: s.sections.experience.label, href: `#${s.sections.experience.id}` },
+  { action: 'contact', label: s.sections.contact.label, href: `#${s.sections.contact.id}` },
+];
+
+// Noktaların nabzı aynı anda atmasın (sınıf adları Tailwind görsün diye açık yazılı)
+const PING_DELAYS = ['', '[animation-delay:350ms]', '[animation-delay:700ms]', '[animation-delay:1050ms]', '[animation-delay:1400ms]'];
+
+const sceneData: SceneData = {
+  portrait: scenePortrait,
+  icons: sceneIcons,
+  name: cv.name,
+  role: title,
+  stack: cv.focus.slice(0, 4),
+  openToWork: cv.openToWork,
+  labels: Object.fromEntries(sceneLinks.map((link) => [link.action, link.href ? `${link.label} →` : link.label])) as SceneData['labels'],
+};
 ---
 
-<section
-  id="top"
-  class="pt-14 pb-16 [--name:clamp(3.5rem,19vw,12.5rem)] sm:pt-20 lg:pt-20 lg:pb-24 lg:[--name:min(12.5rem,calc(19.1vw_-_1.5rem))] print:pt-0 print:pb-4"
->
-  {
-    cv.openToWork && (
-      <p
-        class="reveal inline-flex items-center gap-2.5 rounded-full border border-rule py-1.5 pr-3.5 pl-3 font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase [--i:0] print:hidden"
-      >
-        <span class="relative flex size-2" aria-hidden="true">
-          <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
-          <span class="relative inline-flex size-2 rounded-full bg-accent" />
+<section id="top" class="relative pt-10 pb-16 sm:pt-14 lg:pb-24 print:pt-0 print:pb-4">
+  <!-- Arka plandaki renkli ışımalar ve ince ızgara (yalnızca süs) -->
+  <div aria-hidden="true" class="hero-backdrop pointer-events-none absolute -top-16 -z-10 h-[52rem] print:hidden"></div>
+
+  <div class="grid items-center gap-x-8 gap-y-10 lg:min-h-[min(44rem,calc(100svh-8rem))] lg:grid-cols-12 print:block print:min-h-0">
+    <div class="lg:col-span-6">
+      {
+        cv.openToWork && (
+          <p class="reveal inline-flex items-center gap-2.5 rounded-full border border-rule bg-paper/60 py-1.5 pr-3.5 pl-3 font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase backdrop-blur [--i:0] print:hidden">
+            <span class="relative flex size-2" aria-hidden="true">
+              <span class="absolute inline-flex size-full animate-ping rounded-full bg-pop opacity-60 motion-reduce:hidden" />
+              <span class="relative inline-flex size-2 rounded-full bg-pop" />
+            </span>
+            {s.openToWork}
+          </p>
+        )
+      }
+
+      <h1 class="mt-7 font-serif text-[clamp(3rem,7.4vw,6rem)] leading-[0.92] tracking-[-0.02em] print:mt-0 print:text-[34pt]">
+        <span class="hero-line"><span class="[--d:100ms]">{firstName}</span></span>
+        <span class="hero-line">
+          <span class="text-gradient italic [--d:220ms] print:bg-none print:text-ink">{lastName}</span>
         </span>
-        {s.openToWork}
-      </p>
-    )
-  }
+      </h1>
 
-  <h1 class="mt-8 font-serif text-(length:--name) leading-[0.84] tracking-[-0.025em] print:mt-0 print:text-[34pt]">
-    <span class="hero-line"><span class="[--d:100ms]">{firstName}</span></span>
-    <span class="hero-line"><span class="text-accent italic [--d:220ms]">{lastName}</span></span>
-  </h1>
-
-  <div
-    class:list={[
-      'mt-8 grid gap-x-8 gap-y-10 md:grid-cols-12 lg:mt-0 lg:gap-x-10 print:mt-1 print:block',
-      photo && 'md:grid-rows-[auto_1fr]',
-    ]}
-  >
-    <div class:list={['md:row-start-1 lg:pt-10', photo ? 'md:col-span-7' : 'md:col-span-12']}>
-      <p class="reveal flex items-center gap-4 text-lg leading-snug [--i:2] sm:text-xl lg:text-2xl print:text-[13px]">
-        <span aria-hidden="true" class="h-px w-10 shrink-0 bg-accent sm:w-14 print:hidden"></span>
+      <p class="reveal mt-6 flex items-center gap-4 text-lg leading-snug [--i:2] sm:text-xl print:mt-2 print:text-[13px]">
+        <span aria-hidden="true" class="h-0.5 w-10 shrink-0 bg-linear-to-r from-accent to-pop sm:w-14 print:hidden"></span>
         {title}
       </p>
 
       <ul class="hidden print:mt-2 print:flex print:flex-wrap print:gap-x-4 print:gap-y-0.5 print:text-[10px] print:text-ink-2">
         {printContacts.map((item) => <li>{item}</li>)}
       </ul>
-    </div>
 
-    {
-      photo && (
-        <figure class="relative ml-auto w-[min(86%,22rem)] md:col-span-5 md:col-start-8 md:row-span-2 md:row-start-1 md:w-full md:self-start lg:-mt-[calc(var(--name)*0.72)] print:hidden">
-          <div class="group relative">
-            <span
-              aria-hidden="true"
-              class="absolute inset-0 translate-x-3 translate-y-3 rounded-t-full border border-ink/20 sm:translate-x-4 sm:translate-y-4"
-            />
-            <div class="portrait-unveil relative aspect-[4/5] overflow-hidden rounded-t-full bg-rule">
-              <Picture
-                src={photo.src}
-                alt={t(photo.alt, lang)}
-                formats={['avif']}
-                fallbackFormat="webp"
-                widths={[400, 600, 860, 1122]}
-                sizes="(min-width: 1180px) 430px, (min-width: 768px) 37vw, min(86vw, 352px)"
-                loading="eager"
-                fetchpriority="high"
-                class="absolute inset-0 size-full object-cover grayscale sepia-20 transition-[filter,scale] duration-700 ease-out group-hover:scale-[1.03] group-hover:grayscale-0 group-hover:sepia-0"
-              />
-              <span aria-hidden="true" class="pointer-events-none absolute inset-0 bg-(--photo-veil)" />
-            </div>
-
-            <div
-              aria-hidden="true"
-              class="reveal absolute bottom-8 -left-8 size-24 rounded-full border border-rule bg-paper [--i:6] sm:size-28 md:-left-5 lg:bottom-12 lg:-left-7 lg:size-32"
-            >
-              <svg viewBox="0 0 120 120" class="stamp-spin size-full">
-                <path id="hero-stamp-path" fill="none" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0" />
-                <text class="fill-ink-2 font-mono text-[8.5px]">
-                  <textPath href="#hero-stamp-path" textLength="287" lengthAdjust="spacing">
-                    {stamp}
-                  </textPath>
-                </text>
-              </svg>
-              <span class="absolute inset-0 grid place-items-center font-mono text-sm text-accent lg:text-base">
-                &lt;/&gt;
-              </span>
-            </div>
-          </div>
-
-          <figcaption class="reveal mt-6 flex items-baseline justify-between gap-4 font-mono text-[10px] tracking-[0.16em] text-ink-3 uppercase [--i:7] sm:mt-7">
-            <span>{t(cv.location, lang)}</span>
-            <span aria-hidden="true">40.77° N · 29.94° E</span>
-          </figcaption>
-        </figure>
-      )
-    }
-
-    <div class:list={['md:row-start-2', photo ? 'md:col-span-7' : 'md:col-span-12']}>
-      <p
-        class="reveal max-w-[62ch] text-[17px] leading-relaxed text-pretty text-ink-2 [--i:3] sm:text-lg sm:leading-relaxed print:mt-3 print:max-w-none print:text-base print:text-ink"
-      >
-        {t(cv.summary, lang)}
+      <p class="reveal mt-6 max-w-[34rem] text-[17px] leading-relaxed text-pretty text-ink-2 [--i:3] sm:text-lg print:hidden">
+        {t(cv.tagline, lang)}
       </p>
 
-      <div class="reveal mt-8 flex flex-wrap items-center gap-3 [--i:5] print:hidden">
+      <div class="reveal mt-8 flex flex-wrap items-center gap-3 [--i:4] print:hidden">
         <a
           href={`#${s.sections.contact.id}`}
-          class="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:bg-accent"
+          class="group inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-paper shadow-[0_0_36px_-6px_var(--accent)] transition hover:shadow-[0_0_48px_-4px_var(--accent)]"
         >
           {s.contactCta}
           <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
@@ -154,7 +125,7 @@ const stamp = `${title.toLocaleUpperCase(lang === 'tr' ? 'tr-TR' : 'en-US')} •
               href={cv.links.github}
               target="_blank"
               rel="noopener"
-              class="inline-flex items-center gap-2 rounded-full border border-rule px-5 py-3 text-sm transition-colors hover:border-ink"
+              class="inline-flex items-center gap-2 rounded-full border border-rule bg-paper/60 px-5 py-3 text-sm backdrop-blur transition-colors hover:border-ink"
             >
               GitHub <span aria-hidden="true">↗</span>
             </a>
@@ -166,7 +137,7 @@ const stamp = `${title.toLocaleUpperCase(lang === 'tr' ? 'tr-TR' : 'en-US')} •
               href={cv.links.linkedin}
               target="_blank"
               rel="noopener"
-              class="inline-flex items-center gap-2 rounded-full border border-rule px-5 py-3 text-sm transition-colors hover:border-ink"
+              class="inline-flex items-center gap-2 rounded-full border border-rule bg-paper/60 px-5 py-3 text-sm backdrop-blur transition-colors hover:border-ink"
             >
               LinkedIn <span aria-hidden="true">↗</span>
             </a>
@@ -174,18 +145,199 @@ const stamp = `${title.toLocaleUpperCase(lang === 'tr' ? 'tr-TR' : 'en-US')} •
         }
       </div>
     </div>
+
+    <!--
+      3D sahne: sayfa boyandıktan sonra yüklenir. Hazır olana kadar (ya da WebGL yoksa) portre görünür.
+      Sahne hazır olunca dış kutuya "is-ready" eklenir: portre küçülüp masadaki çerçeveye çekilir.
+      Çerçeveye (ya da "Portre" düğmesine) basınca "is-portrait": kamera fotoğrafa yaklaşır, portre
+      büyüyerek öne gelir; "Bilgisayara dön", Esc ya da portreye tıklamak masaya geri döndürür.
+    -->
+    <div data-hero-stage class="relative w-full lg:col-span-6 print:hidden">
+      <div data-hero-scene data-scene={JSON.stringify(sceneData)} class="relative aspect-[5/4] w-full lg:aspect-square">
+        {
+          photo && (
+            <figure class="absolute inset-0 z-10 grid place-items-center">
+              <div class="hero-portrait relative aspect-[4/5] h-[86%]">
+                <span
+                  aria-hidden="true"
+                  class="absolute inset-0 translate-x-3 translate-y-3 rounded-t-full border border-accent/50 sm:translate-x-4 sm:translate-y-4"
+                />
+                <div class="portrait-unveil relative size-full overflow-hidden rounded-t-full shadow-[0_0_80px_-20px_var(--accent)]">
+                  <Picture
+                    src={photo.src}
+                    alt={t(photo.alt, lang)}
+                    formats={['avif']}
+                    fallbackFormat="webp"
+                    widths={[400, 600, 860]}
+                    sizes="(min-width: 1024px) 420px, 70vw"
+                    loading="eager"
+                    fetchpriority="high"
+                    class="absolute inset-0 size-full object-cover"
+                  />
+                  <span aria-hidden="true" class="pointer-events-none absolute inset-0 bg-(--photo-veil)" />
+                </div>
+              </div>
+            </figure>
+          )
+        }
+        <canvas
+          aria-hidden="true"
+          class="hero-canvas absolute inset-0 size-full opacity-0 transition-[opacity,filter] duration-700 [.is-ready_&]:opacity-100 [.is-ready.is-portrait_&]:opacity-25 [.is-ready.is-portrait_&]:blur-sm"
+        ></canvas>
+        <span
+          data-scene-tip
+          aria-hidden="true"
+          class="pointer-events-none absolute top-0 left-0 z-20 rounded-full bg-ink px-3 py-1.5 text-xs font-medium whitespace-nowrap text-paper opacity-0 shadow-lg transition-opacity [&.is-visible]:opacity-100"
+        ></span>
+        <button
+          type="button"
+          data-scene-back
+          hidden
+          class="absolute top-3 left-3 z-20 inline-flex cursor-pointer items-center gap-2 rounded-full border border-rule bg-paper/80 px-4 py-2 text-sm backdrop-blur transition-colors hover:border-accent"
+        >
+          <span aria-hidden="true">←</span>
+          {s.scene.back}
+        </button>
+        {
+          /*
+            Tıklanabilir noktalar: konumlarını sahne her karede yazar (nesnenin üstünde dururlar).
+            Açılışta kapak açıldıktan sonra belirir, portre modunda gizlenir. Etiket fareyle üzerine
+            gelince ya da klavyeyle seçince görünür; dokunmatik ekranlarda hep görünür.
+          */
+          sceneLinks.map((link, i) => {
+            const spot = [
+              'group/spot absolute top-0 left-0 z-20 -translate-x-3.5 -translate-y-1/2 inline-flex cursor-pointer items-center gap-2 outline-none',
+              'invisible opacity-0 transition-opacity duration-500',
+              '[.is-ready_&]:visible [.is-ready_&]:opacity-100 [.is-ready_&]:delay-[1800ms]',
+              '[.is-ready.is-portrait_&]:invisible [.is-ready.is-portrait_&]:opacity-0 [.is-ready.is-portrait_&]:delay-0',
+            ].join(' ');
+            const dot = (
+              <>
+                <span class="relative grid size-7 shrink-0 place-items-center rounded-full border border-paper/70 bg-accent shadow-[0_0_22px_var(--accent)] transition-transform group-hover/spot:scale-115 group-focus-visible/spot:scale-115 group-focus-visible/spot:ring-2 group-focus-visible/spot:ring-ink">
+                  <span
+                    aria-hidden="true"
+                    class:list={['absolute inset-0 animate-ping rounded-full bg-accent/60 motion-reduce:hidden', PING_DELAYS[i % PING_DELAYS.length]]}
+                  />
+                  <span aria-hidden="true" class="relative size-2 rounded-full bg-paper" />
+                </span>
+                <span class="rounded-full bg-ink/90 px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] whitespace-nowrap text-paper uppercase opacity-0 shadow-lg transition-opacity group-hover/spot:opacity-100 group-focus-visible/spot:opacity-100 [@media(hover:none)]:opacity-100">
+                  {link.label}
+                </span>
+              </>
+            );
+            return link.href ? (
+              <a href={link.href} data-hotspot={link.action} class={spot}>
+                {dot}
+              </a>
+            ) : (
+              <button type="button" data-hotspot={link.action} class={spot}>
+                {dot}
+              </button>
+            );
+          })
+        }
+      </div>
+    </div>
   </div>
 
-  <dl
-    class="reveal mt-14 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-rule pt-8 [--i:6] lg:mt-20 lg:grid-cols-4 print:mt-4 print:grid-cols-4 print:gap-x-5 print:gap-y-2 print:pt-3"
-  >
-    {
-      facts.map((fact) => (
-        <div>
-          <dt class="font-mono text-[10px] tracking-[0.16em] text-ink-2 uppercase">{fact.label}</dt>
-          <dd class="mt-1 text-[15px] leading-snug print:text-sm">{fact.value}</dd>
-        </div>
-      ))
-    }
-  </dl>
+  <div class="mt-16 grid gap-x-10 gap-y-10 border-t border-rule pt-10 lg:mt-20 lg:grid-cols-12 print:mt-3 print:block print:border-0 print:pt-0">
+    <p class="reveal text-lg leading-relaxed text-pretty text-ink-2 [--i:5] lg:col-span-7 lg:text-xl lg:leading-relaxed print:text-base print:text-ink">
+      {t(cv.summary, lang)}
+    </p>
+    <dl class="reveal grid content-start grid-cols-2 gap-x-8 gap-y-6 [--i:6] lg:col-span-5 print:mt-4 print:grid-cols-4 print:gap-x-5 print:gap-y-2 print:border-t print:border-rule print:pt-3">
+      {
+        facts.map((fact) => (
+          <div>
+            <dt class="font-mono text-[10px] tracking-[0.16em] text-accent uppercase print:text-ink-2">{fact.label}</dt>
+            <dd class="mt-1 text-[15px] leading-snug print:text-sm">{fact.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
 </section>
+
+<script>
+  import type { HeroScene, SceneAction } from '../scripts/hero-scene';
+
+  // 3D sahne ilk boyamayı geciktirmesin: tarayıcı boşa çıkınca ayrı bir dosya olarak yüklenir.
+  // Veri tasarrufu açıksa sahne hiç yüklenmez, portre kalır.
+  const wrapper = document.querySelector<HTMLElement>('[data-hero-stage]');
+  const stage = wrapper?.querySelector<HTMLElement>('[data-hero-scene]');
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+
+  if (wrapper && stage && !saveData) {
+    const boot = async () => {
+      const canvas = stage.querySelector('canvas');
+      if (!canvas || !stage.dataset.scene) return;
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const { createHeroScene } = await import('../scripts/hero-scene');
+
+      const portrait = stage.querySelector<HTMLElement>('.hero-portrait');
+      const back = stage.querySelector<HTMLButtonElement>('[data-scene-back]');
+      let scene: HeroScene | null = null;
+      let timer = 0;
+
+      // Portre: önce 3D çerçeve masadan kalkıp kameraya uçar; tam önüne gelince yerini aynı
+      // boyuttan büyüyen net (HTML) portreye bırakır. Dönüşte tersi olur.
+      const openPortrait = () => {
+        if (wrapper.classList.contains('is-portrait')) return;
+        portrait?.style.setProperty('--fdx', '0px');
+        portrait?.style.setProperty('--fdy', '0px');
+        portrait?.style.setProperty('--fds', '0.58');
+        portrait?.getBoundingClientRect();
+        scene?.focusPortrait(true);
+        timer = window.setTimeout(() => wrapper.classList.add('is-portrait'), reducedMotion ? 0 : 650);
+        if (back) {
+          back.hidden = false;
+          back.focus({ preventScroll: true });
+        }
+      };
+
+      const closePortrait = () => {
+        window.clearTimeout(timer);
+        wrapper.classList.remove('is-portrait');
+        scene?.focusPortrait(false);
+        if (back) back.hidden = true;
+      };
+
+      const run = (action: SceneAction) => {
+        if (action === 'portrait') openPortrait();
+        else wrapper.querySelector<HTMLAnchorElement>(`a[data-hotspot="${action}"]`)?.click();
+      };
+
+      scene = createHeroScene({
+        canvas,
+        container: stage,
+        data: JSON.parse(stage.dataset.scene),
+        reducedMotion,
+        onAction: run,
+      });
+      if (!scene) return;
+      const ready = scene;
+      requestAnimationFrame(() => wrapper.classList.add('is-ready'));
+
+      // Nesnelerin üstündeki noktalar: üzerine gelince nesne kalkar; portre noktası çerçeve gibi çalışır
+      for (const spot of stage.querySelectorAll<HTMLElement>('[data-hotspot]')) {
+        const action = spot.dataset.hotspot as SceneAction;
+        const on = () => ready.highlight(action);
+        const off = () => ready.highlight(null);
+        spot.addEventListener('pointerenter', on);
+        spot.addEventListener('pointerleave', off);
+        spot.addEventListener('focus', on);
+        spot.addEventListener('blur', off);
+        if (action === 'portrait') spot.addEventListener('click', () => run('portrait'));
+      }
+
+      back?.addEventListener('click', closePortrait);
+      portrait?.addEventListener('click', () => {
+        if (wrapper.classList.contains('is-portrait')) closePortrait();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && wrapper.classList.contains('is-portrait')) closePortrait();
+      });
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(() => void boot(), { timeout: 1500 });
+    else setTimeout(() => void boot(), 300);
+  }
+</script>

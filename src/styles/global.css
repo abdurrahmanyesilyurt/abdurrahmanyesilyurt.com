@@ -8,6 +8,8 @@
   --color-ink-3: var(--ink-3);
   --color-rule: var(--rule);
   --color-accent: var(--accent);
+  --color-pop: var(--pop);
+  --color-paper-2: var(--paper-2);
 }
 
 @theme {
@@ -17,22 +19,37 @@
 }
 
 /*
- * Renkler: kâğıt & mürekkep, vurgu rengi "yeşil".
- * light-dark() sistem temasını izler; tema düğmesi data-theme ile bunu ezer.
+ * Renkler: koyu öncelikli tema (gece mavisi zemin), canlı bir renk ailesi ve parlayan vurgular.
+ * Varsayılan koyu; tema düğmesi data-theme="light" ile açık temaya geçirir. Baskı her zaman açıktır.
+ *
+ * --hue-1…6: kart tonları, kısaltmalar ve ışımalar bunlardan türetilir (.tile-tint).
+ * --accent:  ana vurgu (linkler, ana düğme); iki temada da küçük yazıda en az 4.5:1 kontrast.
+ * --pop:     ikinci vurgu (noktalar, çizgiler, ışıma); yalnızca süs ve büyük öğeler için.
  */
 :root {
-  color-scheme: light dark;
-  --paper: light-dark(#f4f1ea, #0f100e);
-  --ink: light-dark(#161613, #ece8df);
-  --ink-2: light-dark(#56534b, #a9a59b);
-  --ink-3: light-dark(#8b877c, #6f6c64);
-  --rule: light-dark(#d9d3c5, #2a2b27);
-  --accent: light-dark(#11704a, #5bd69a);
-  /* Koyu temada açık gri fotoğraf zemini parlamasın diye portrenin üstüne hafif bir tül */
-  --photo-veil: light-dark(rgb(15 16 14 / 0), rgb(15 16 14 / 0.22));
+  color-scheme: dark;
+  --paper: light-dark(#ffffff, #07080d);
+  --paper-2: light-dark(#f4f5f9, #0d0f17);
+  --ink: light-dark(#0b0b10, #eef0f6);
+  --ink-2: light-dark(#4a4a55, #a3a7b7);
+  --ink-3: light-dark(#7c7c8c, #6b7081);
+  --rule: light-dark(#e4e4ec, #1c1f2c);
+
+  --hue-1: light-dark(#2d5bff, #7c9bff);
+  --hue-2: light-dark(#ff5d3a, #ff8466);
+  --hue-3: light-dark(#ffb800, #ffcf4d);
+  --hue-4: light-dark(#7a5cff, #a48fff);
+  --hue-5: light-dark(#0fb886, #3ddba6);
+  --hue-6: light-dark(#f0468c, #ff74aa);
+
+  --accent: var(--hue-1);
+  --pop: var(--hue-6);
+
+  /* Koyu temada açık gri fotoğraf zemini (3D sahne yüklenmeden görünen portre) parlamasın diye tül */
+  --photo-veil: light-dark(rgb(13 13 18 / 0), rgb(13 13 18 / 0.18));
 
   /* Blog kod blokları (Prism) */
-  --code-bg: light-dark(#ebe6db, #171815);
+  --code-bg: light-dark(#f2f2f7, #11131d);
   --code-comment: light-dark(#77736a, #7b786f);
   --code-keyword: light-dark(#8a3ffc, #c9a7ff);
   --code-string: light-dark(#11704a, #7fe0ae);
@@ -59,6 +76,8 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Tam genişlik ışımalar yatay kaydırma çubuğu açmasın (clip, sticky başlığı bozmaz) */
+    overflow-x: clip;
   }
 
   ::selection {
@@ -73,15 +92,150 @@
   }
 }
 
-/* Kâğıt dokusu */
+/* Çok hafif doku: beyaz zemini griye çekmeyecek kadar */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.07;
+  opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * Parlayan, eğilen kart. src/scripts/glow-cards.ts imlecin kart içindeki yerini (--mx/--my) ve eğimi
+ * (--rx/--ry) yazar; kenar ışığı ve içteki spot ışığı imleci izler. Arka plan katmanları:
+ * spot ışığı + kart zemini (padding-box), kenar ışığı + kenar rengi (border-box).
+ * components katmanında: Tailwind'in print:/hover: sınıfları bunu ezebilsin.
+ */
+@property --glow-a {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --rx {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --ry {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@layer components {
+  .glow-card {
+    --card-bg: var(--paper-2);
+    --card-line: var(--rule);
+    --glow: var(--accent);
+    border: 1px solid transparent;
+    background:
+      radial-gradient(26rem circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--glow) calc(var(--glow-a) * 14%), transparent), transparent 65%) padding-box,
+      linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+      radial-gradient(14rem circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--glow) calc(var(--glow-a) * 100%), transparent), transparent 70%) border-box,
+      linear-gradient(var(--card-line), var(--card-line)) border-box;
+    transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
+    transition:
+      --glow-a 0.35s ease,
+      --rx 0.35s ease-out,
+      --ry 0.35s ease-out;
+  }
+
+  .glow-card:hover {
+    --glow-a: 1;
+  }
+
+  .glow-card[open] {
+    --card-line: color-mix(in oklab, var(--glow) 50%, var(--paper));
+  }
+
+  /*
+   * Renkli kart: --tile (bir --hue-N). Koyu temada renk kenarda ve ışımada kalır (koyu zemine fazla
+   * karışınca bulanık kahverengi tonlar çıkıyor); açık temada zemin de hafifçe boyanır.
+   */
+  .tile-tint {
+    --tile-bg: color-mix(in oklab, var(--tile) 6%, var(--paper-2));
+    --card-bg: var(--tile-bg);
+    --card-line: color-mix(in oklab, var(--tile) 32%, var(--paper));
+    --glow: var(--tile);
+  }
+
+  :root[data-theme="light"] .tile-tint {
+    --tile-bg: color-mix(in oklab, var(--tile) 14%, var(--paper));
+  }
+
+  /* Hero arkasındaki ışımalar ve ince ızgara; body'deki overflow-x: clip taşmayı keser */
+  .hero-backdrop {
+    left: 50%;
+    width: 100vw;
+    translate: -50% 0;
+    background:
+      radial-gradient(38rem 28rem at 72% 42%, color-mix(in oklab, var(--hue-1) 26%, transparent), transparent 70%),
+      radial-gradient(26rem 22rem at 88% 72%, color-mix(in oklab, var(--hue-6) 20%, transparent), transparent 70%),
+      radial-gradient(30rem 24rem at 18% 12%, color-mix(in oklab, var(--hue-4) 16%, transparent), transparent 70%);
+  }
+
+  .hero-backdrop::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, var(--rule) 1px, transparent 1px) 0 0 / 56px 56px,
+      linear-gradient(to bottom, var(--rule) 1px, transparent 1px) 0 0 / 56px 56px;
+    mask-image: radial-gradient(ellipse 60% 55% at 65% 45%, #000 15%, transparent 75%);
+    opacity: 0.55;
+  }
+
+  /* Fizikli logo havuzu: fizik başlayınca logolar kutuya göre konumlanır, konumu JS yazar */
+  .tech-pool.is-live .pool-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: grab;
+    touch-action: none;
+    will-change: transform;
+  }
+
+  .tech-pool.is-live .pool-item.is-dragging {
+    cursor: grabbing;
+  }
+
+  /*
+   * Hero portresi: 3D sahne hazır olunca küçülüp (--fds) masadaki çerçeveye doğru (--fdx/--fdy)
+   * çekilir ve kaybolur. Portre modunda, kameraya uçan 3D çerçevenin boyutundan büyüyerek öne gelir.
+   */
+  [data-hero-stage].is-ready .hero-portrait {
+    opacity: 0;
+    translate: var(--fdx, -28%) var(--fdy, 0px);
+    scale: var(--fds, 0.16);
+    pointer-events: none;
+  }
+
+  [data-hero-stage].is-ready.is-portrait .hero-portrait {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    pointer-events: auto;
+    cursor: zoom-out;
+  }
+
+  /* 3D sahnenin kenarları yumuşakça kaybolsun; tuval sınırında nesneler kesik görünmesin */
+  .hero-canvas {
+    mask-image: radial-gradient(ellipse 58% 56% at 50% 50%, #000 62%, transparent 100%);
+  }
+
+  /* Soyadındaki mavi → mor → pembe geçiş */
+  .text-gradient {
+    background-image: linear-gradient(100deg, var(--hue-1), var(--hue-4) 48%, var(--hue-6));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.08em;
+  }
 }
 
 .skip-link {
@@ -256,17 +410,21 @@ body::before {
     animation-delay: calc(var(--i, 0) * 90ms + 200ms);
   }
 
-  /* Hero portresi alttan yukarı açılır, fotoğraf hafifçe yerine oturur; köşedeki rozet yavaşça döner */
+  /* Portre ile 3D masa arasındaki geçiş */
+  .hero-portrait {
+    transition:
+      opacity 0.45s ease,
+      translate 0.9s cubic-bezier(0.19, 1, 0.22, 1),
+      scale 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  /* Hero portresi (3D sahne yüklenene kadar görünen yedek) alttan yukarı açılır */
   .portrait-unveil {
     animation: unveil 1.4s cubic-bezier(0.19, 1, 0.22, 1) 0.3s both;
   }
 
   .portrait-unveil img {
     animation: settle 2s cubic-bezier(0.19, 1, 0.22, 1) 0.3s both;
-  }
-
-  .stamp-spin {
-    animation: stamp-rotate 32s linear infinite;
   }
 
   @supports (animation-timeline: view()) {
@@ -307,12 +465,6 @@ body::before {
   }
 }
 
-@keyframes stamp-rotate {
-  to {
-    transform: rotate(1turn);
-  }
-}
-
 /* Ctrl+P → "PDF olarak kaydet" ile temiz, tek renk bir CV çıkar */
 @media print {
   @page {
@@ -328,7 +480,6 @@ body::before {
     --ink-2: #444 !important;
     --ink-3: #777 !important;
     --rule: #d4d4d4 !important;
-    --accent: #0d5c3c !important;
   }
 
   html {
@@ -350,6 +501,12 @@ body::before {
 
   .print-break-avoid {
     break-inside: avoid;
+  }
+
+  /* Efekt kartları kâğıtta düz kalsın */
+  .glow-card {
+    transform: none !important;
+    background: none !important;
   }
 
   /* Kapalı kartların içeriği de basılsın (site.js "beforeprint"te zaten açar; bu yedek) */
