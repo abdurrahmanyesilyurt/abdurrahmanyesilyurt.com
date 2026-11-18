@@ -5,10 +5,9 @@ import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
-  number: string;
 }
 
-const { lang, number } = Astro.props;
+const { lang } = Astro.props;
 const s = ui[lang];
 
 interface ContactLink {
@@ -38,7 +37,7 @@ const links = [
 
 <!-- Baskıda iletişim bilgileri en üstte, ismin altında (Hero) yer alır -->
 <div class="print:hidden">
-  <Section id={s.sections.contact.id} number={number} title={s.sections.contact.label}>
+  <Section id={s.sections.contact.id} title={s.sections.contact.label}>
     <p class="scroll-reveal font-serif text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.98] tracking-[-0.015em] text-balance">
       {s.contactTitle} <em class="text-accent">{s.contactAccent}</em>
     </p>

@@ -11,10 +11,9 @@ import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
-  number: string;
 }
 
-const { lang, number } = Astro.props;
+const { lang } = Astro.props;
 const s = ui[lang];
 
 // Gruplar kapalı kartlar olarak listelenir; kapalıyken logolardan kısa bir önizleme görünür
@@ -47,7 +46,7 @@ const groups = cv.skills.map((group, index) => {
 const hasCore = groups.some((group) => group.items.some((item) => item.core));
 ---
 
-<Section id={s.sections.skills.id} number={number} title={s.sections.skills.label}>
+<Section id={s.sections.skills.id} title={s.sections.skills.label}>
   {
     hasCore && (
       <p

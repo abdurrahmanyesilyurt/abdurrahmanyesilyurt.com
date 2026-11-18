@@ -20,9 +20,43 @@
     }
   };
 
+  // Ana bölümler: başlıktaki düğme bölümü kapatıp açar. Kapalı bölümün içeriği "inert" olur (sekmeyle
+  // içine girilmez); kapanma animasyonu bitene kadar "is-animating" taşmayı gizler.
+  const setSection = (section, open) => {
+    const button = section.querySelector('[data-section-toggle]');
+    const body = section.querySelector('[data-section-body]');
+    if (!button || !body || section.classList.contains('is-collapsed') !== open) return;
+    section.classList.add('is-animating');
+    section.classList.toggle('is-collapsed', !open);
+    button.setAttribute('aria-expanded', String(open));
+    body.inert = !open;
+    window.clearTimeout(Number(section.dataset.timer));
+    section.dataset.timer = String(window.setTimeout(() => section.classList.remove('is-animating'), 500));
+  };
+
+  // Kapalı bir bölüme (ya da içindeki bir yere) giden link bölümü açar
+  const openSectionFor = (hash) => {
+    if (!hash || hash === '#') return;
+    let target = null;
+    try {
+      target = document.querySelector(hash);
+    } catch {}
+    const section = target?.closest('[data-section]');
+    if (section) setSection(section, true);
+  };
+
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
+
+    const sectionToggle = target.closest('[data-section-toggle]');
+    const hashLink = target.closest('a[href^="#"]');
+    if (sectionToggle) {
+      const section = sectionToggle.closest('[data-section]');
+      if (section) setSection(section, section.classList.contains('is-collapsed'));
+      return;
+    }
+    if (hashLink) openSectionFor(hashLink.hash);
 
     const expandAll = target.closest('[data-expand-all]');
     if (target.closest('[data-theme-toggle]')) {
@@ -51,17 +85,27 @@
     true,
   );
 
-  // Baskıda kapalı kartlar da açık çıksın, sonra eski hâline dönsün
+  window.addEventListener('hashchange', () => openSectionFor(location.hash));
+
+  // Baskıda kapalı kartlar ve bölümler de açık çıksın, sonra eski hâline dönsün
   window.addEventListener('beforeprint', () => {
     for (const item of document.querySelectorAll('details[data-expandable]:not([open])')) {
       item.dataset.printOpened = '';
       item.open = true;
+    }
+    for (const section of document.querySelectorAll('[data-section].is-collapsed')) {
+      section.dataset.printOpened = '';
+      setSection(section, true);
     }
   });
   window.addEventListener('afterprint', () => {
     for (const item of document.querySelectorAll('details[data-print-opened]')) {
       item.open = false;
       delete item.dataset.printOpened;
+    }
+    for (const section of document.querySelectorAll('[data-section][data-print-opened]')) {
+      setSection(section, false);
+      delete section.dataset.printOpened;
     }
   });
 })();

@@ -5,17 +5,16 @@ import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
-  number: string;
 }
 
-const { lang, number } = Astro.props;
+const { lang } = Astro.props;
 const s = ui[lang];
 
 const cefrLevels: Cefr[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 const subheading = 'font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase';
 ---
 
-<Section id={s.sections.education.id} number={number} title={s.sections.education.label} keepTogether>
+<Section id={s.sections.education.id} title={s.sections.education.label} keepTogether>
   <div class="grid gap-x-10 gap-y-14 md:grid-cols-2 print:grid-cols-2 print:gap-y-5">
     {
       cv.education.length > 0 && (
