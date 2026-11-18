@@ -96,6 +96,8 @@ export interface Language {
 export interface CV {
   name: string;
   title: Localized;
+  /** Hero'daki kısa tanıtım (bir-iki cümle); uzun özet hero'nun altında durur */
+  tagline: Localized;
   summary: Localized;
   location: Localized;
   focus: string[];
@@ -117,6 +119,10 @@ export const cv: CV = {
   title: {
     tr: 'Backend & Full-Stack Yazılım Geliştirici',
     en: 'Backend & Full-Stack Software Developer',
+  },
+  tagline: {
+    tr: 'ASP.NET Core ve NestJS ile sağlam backend’ler, Next.js ve React Native ile hızlı arayüzler kuruyorum; Claude ile canlıda çalışan yapay zekâ özellikleri geliştiriyorum.',
+    en: 'I build solid backends with ASP.NET Core and NestJS, fast interfaces with Next.js and React Native, and AI features that run in production with Claude.',
   },
   summary: {
     tr: 'ASP.NET Core, NestJS ve PostgreSQL ile backend sistemler; Next.js ve React Native (Expo) ile web ve mobil istemciler geliştiren bir bilgisayar mühendisiyim. Farklı sektörlerden firmalar için geliştirdiğim ürünler web’de, App Store’da ve Google Play’de canlıda. Canlıda çalışan yapay zekâ özellikleri geliştiriyorum: EcoYazılım platformu için araç kullanan ve yazma işlemlerini kullanıcı onayıyla yapan bir LLM ajanı (Anthropic Claude) ve Claude API ile e-postalardan randevu, görev ve son tarih çıkaran kendi ürünüm Ecoasistan. Günlük geliştirmede Claude Code kullanır, ürettiği kodu inceleme ve testle doğrularım. API ve veritabanı tasarımından kimlik doğrulama, bulut dağıtımı ve CI/CD otomasyonuna kadar uçtan uca sorumluluk alırım.',

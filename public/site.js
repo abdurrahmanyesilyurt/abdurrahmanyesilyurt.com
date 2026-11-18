@@ -26,7 +26,8 @@
 
     const expandAll = target.closest('[data-expand-all]');
     if (target.closest('[data-theme-toggle]')) {
-      const current = root.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      // Site koyu öncelikli: kayıtlı tercih yoksa koyu temadayız
+      const current = root.dataset.theme ?? 'dark';
       const next = current === 'dark' ? 'light' : 'dark';
       root.dataset.theme = next;
       try {
