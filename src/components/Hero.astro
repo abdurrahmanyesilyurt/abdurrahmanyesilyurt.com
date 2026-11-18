@@ -1,4 +1,5 @@
 ---
+import { Picture } from 'astro:assets';
 import { cv, displayUrl, t } from '../data/cv';
 import { ui, type Lang } from '../i18n/ui';
 
@@ -8,6 +9,8 @@ interface Props {
 
 const { lang } = Astro.props;
 const s = ui[lang];
+const photo = cv.photo;
+const title = t(cv.title, lang);
 
 const splitAt = cv.name.lastIndexOf(' ');
 const firstName = cv.name.slice(0, splitAt);
@@ -18,8 +21,8 @@ const spoken = cv.languages
   .map((l) => (l.level === 'native' ? t(l.name, lang) : `${t(l.name, lang)} (${l.level})`))
   .join(' · ');
 
+// Unvan artık ismin hemen altında; bilgi şeridinde tekrar edilmez
 const facts = [
-  { label: s.facts.role, value: t(cv.title, lang) },
   { label: s.facts.focus, value: cv.focus.join(' · ') },
   { label: s.facts.location, value: t(cv.location, lang) },
   { label: s.facts.languages, value: spoken },
@@ -33,9 +36,18 @@ const printContacts = [
   cv.links.linkedin && displayUrl(cv.links.linkedin),
   Astro.site && displayUrl(Astro.site.href),
 ].filter((item): item is string => Boolean(item));
+
+// Portrenin köşesindeki dönen rozet: unvan çemberin etrafına yazılır (Türkçe büyük harf kuralıyla)
+const stamp = `${title.toLocaleUpperCase(lang === 'tr' ? 'tr-TR' : 'en-US')} • `;
+
+// --name: ismin punto büyüklüğü. Geniş ekranda portre ikinci satırın ("Yeşilyurt") hizasından başlar;
+// punto, italik soyadı (≈2.93em) portrenin solundaki 7 sütuna sığacak şekilde ekran genişliğine göre hesaplanır.
 ---
 
-<section id="top" class="pt-14 pb-16 sm:pt-20 lg:pt-28 lg:pb-24 print:pt-0 print:pb-4">
+<section
+  id="top"
+  class="pt-14 pb-16 [--name:clamp(3.5rem,19vw,12.5rem)] sm:pt-20 lg:pt-20 lg:pb-24 lg:[--name:min(12.5rem,calc(19.1vw_-_1.5rem))] print:pt-0 print:pb-4"
+>
   {
     cv.openToWork && (
       <p
@@ -50,35 +62,81 @@ const printContacts = [
     )
   }
 
-  <h1
-    class="mt-8 font-serif text-[clamp(3.5rem,19vw,12.5rem)] leading-[0.84] tracking-[-0.025em] print:mt-0 print:text-[34pt]"
-  >
+  <h1 class="mt-8 font-serif text-(length:--name) leading-[0.84] tracking-[-0.025em] print:mt-0 print:text-[34pt]">
     <span class="hero-line"><span class="[--d:100ms]">{firstName}</span></span>
     <span class="hero-line"><span class="text-accent italic [--d:220ms]">{lastName}</span></span>
   </h1>
 
-  <ul class="hidden print:mt-3 print:flex print:flex-wrap print:gap-x-4 print:gap-y-0.5 print:text-[10px] print:text-ink-2">
-    {printContacts.map((item) => <li>{item}</li>)}
-  </ul>
-
   <div
-    class="mt-12 grid gap-x-10 gap-y-10 border-t border-rule pt-8 lg:mt-16 lg:grid-cols-12 print:mt-4 print:grid-cols-12 print:gap-x-6 print:gap-y-4 print:pt-4"
+    class:list={[
+      'mt-8 grid gap-x-8 gap-y-10 md:grid-cols-12 lg:mt-0 lg:gap-x-10 print:mt-1 print:block',
+      photo && 'md:grid-rows-[auto_1fr]',
+    ]}
   >
-    <dl
-      class="reveal order-2 grid content-start gap-x-8 gap-y-5 sm:grid-cols-2 lg:order-1 lg:col-span-4 lg:grid-cols-1 [--i:4] print:order-2 print:col-span-12 print:grid-cols-5 print:gap-x-5"
-    >
-      {
-        facts.map((fact) => (
-          <div>
-            <dt class="font-mono text-[10px] tracking-[0.16em] text-ink-2 uppercase">{fact.label}</dt>
-            <dd class="mt-1 text-[15px] leading-snug print:text-sm">{fact.value}</dd>
-          </div>
-        ))
-      }
-    </dl>
+    <div class:list={['md:row-start-1 lg:pt-10', photo ? 'md:col-span-7' : 'md:col-span-12']}>
+      <p class="reveal flex items-center gap-4 text-lg leading-snug [--i:2] sm:text-xl lg:text-2xl print:text-[13px]">
+        <span aria-hidden="true" class="h-px w-10 shrink-0 bg-accent sm:w-14 print:hidden"></span>
+        {title}
+      </p>
 
-    <div class="order-1 lg:order-2 lg:col-span-8 print:order-1 print:col-span-12">
-      <p class="reveal text-lg leading-relaxed text-pretty [--i:3] sm:text-xl sm:leading-relaxed lg:text-2xl lg:leading-relaxed print:text-base">
+      <ul class="hidden print:mt-2 print:flex print:flex-wrap print:gap-x-4 print:gap-y-0.5 print:text-[10px] print:text-ink-2">
+        {printContacts.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+
+    {
+      photo && (
+        <figure class="relative ml-auto w-[min(86%,22rem)] md:col-span-5 md:col-start-8 md:row-span-2 md:row-start-1 md:w-full md:self-start lg:-mt-[calc(var(--name)*0.72)] print:hidden">
+          <div class="group relative">
+            <span
+              aria-hidden="true"
+              class="absolute inset-0 translate-x-3 translate-y-3 rounded-t-full border border-ink/20 sm:translate-x-4 sm:translate-y-4"
+            />
+            <div class="portrait-unveil relative aspect-[4/5] overflow-hidden rounded-t-full bg-rule">
+              <Picture
+                src={photo.src}
+                alt={t(photo.alt, lang)}
+                formats={['avif']}
+                fallbackFormat="webp"
+                widths={[400, 600, 860, 1122]}
+                sizes="(min-width: 1180px) 430px, (min-width: 768px) 37vw, min(86vw, 352px)"
+                loading="eager"
+                fetchpriority="high"
+                class="absolute inset-0 size-full object-cover grayscale sepia-20 transition-[filter,scale] duration-700 ease-out group-hover:scale-[1.03] group-hover:grayscale-0 group-hover:sepia-0"
+              />
+              <span aria-hidden="true" class="pointer-events-none absolute inset-0 bg-(--photo-veil)" />
+            </div>
+
+            <div
+              aria-hidden="true"
+              class="reveal absolute bottom-8 -left-8 size-24 rounded-full border border-rule bg-paper [--i:6] sm:size-28 md:-left-5 lg:bottom-12 lg:-left-7 lg:size-32"
+            >
+              <svg viewBox="0 0 120 120" class="stamp-spin size-full">
+                <path id="hero-stamp-path" fill="none" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0" />
+                <text class="fill-ink-2 font-mono text-[8.5px]">
+                  <textPath href="#hero-stamp-path" textLength="287" lengthAdjust="spacing">
+                    {stamp}
+                  </textPath>
+                </text>
+              </svg>
+              <span class="absolute inset-0 grid place-items-center font-mono text-sm text-accent lg:text-base">
+                &lt;/&gt;
+              </span>
+            </div>
+          </div>
+
+          <figcaption class="reveal mt-6 flex items-baseline justify-between gap-4 font-mono text-[10px] tracking-[0.16em] text-ink-3 uppercase [--i:7] sm:mt-7">
+            <span>{t(cv.location, lang)}</span>
+            <span aria-hidden="true">40.77° N · 29.94° E</span>
+          </figcaption>
+        </figure>
+      )
+    }
+
+    <div class:list={['md:row-start-2', photo ? 'md:col-span-7' : 'md:col-span-12']}>
+      <p
+        class="reveal max-w-[62ch] text-[17px] leading-relaxed text-pretty text-ink-2 [--i:3] sm:text-lg sm:leading-relaxed print:mt-3 print:max-w-none print:text-base print:text-ink"
+      >
         {t(cv.summary, lang)}
       </p>
 
@@ -117,4 +175,17 @@ const printContacts = [
       </div>
     </div>
   </div>
+
+  <dl
+    class="reveal mt-14 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-rule pt-8 [--i:6] lg:mt-20 lg:grid-cols-4 print:mt-4 print:grid-cols-4 print:gap-x-5 print:gap-y-2 print:pt-3"
+  >
+    {
+      facts.map((fact) => (
+        <div>
+          <dt class="font-mono text-[10px] tracking-[0.16em] text-ink-2 uppercase">{fact.label}</dt>
+          <dd class="mt-1 text-[15px] leading-snug print:text-sm">{fact.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
 </section>

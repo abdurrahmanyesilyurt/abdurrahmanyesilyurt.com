@@ -28,6 +28,8 @@
   --ink-3: light-dark(#8b877c, #6f6c64);
   --rule: light-dark(#d9d3c5, #2a2b27);
   --accent: light-dark(#11704a, #5bd69a);
+  /* Koyu temada açık gri fotoğraf zemini parlamasın diye portrenin üstüne hafif bir tül */
+  --photo-veil: light-dark(rgb(15 16 14 / 0), rgb(15 16 14 / 0.22));
 
   /* Blog kod blokları (Prism) */
   --code-bg: light-dark(#ebe6db, #171815);
@@ -254,6 +256,19 @@ body::before {
     animation-delay: calc(var(--i, 0) * 90ms + 200ms);
   }
 
+  /* Hero portresi alttan yukarı açılır, fotoğraf hafifçe yerine oturur; köşedeki rozet yavaşça döner */
+  .portrait-unveil {
+    animation: unveil 1.4s cubic-bezier(0.19, 1, 0.22, 1) 0.3s both;
+  }
+
+  .portrait-unveil img {
+    animation: settle 2s cubic-bezier(0.19, 1, 0.22, 1) 0.3s both;
+  }
+
+  .stamp-spin {
+    animation: stamp-rotate 32s linear infinite;
+  }
+
   @supports (animation-timeline: view()) {
     .scroll-reveal {
       animation: rise linear both;
@@ -274,6 +289,27 @@ body::before {
   from {
     opacity: 0;
     transform: translateY(18px);
+  }
+}
+
+@keyframes unveil {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes settle {
+  from {
+    transform: scale(1.18);
+  }
+}
+
+@keyframes stamp-rotate {
+  to {
+    transform: rotate(1turn);
   }
 }
 
