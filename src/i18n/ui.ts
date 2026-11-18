@@ -31,7 +31,7 @@ interface UI {
   contactAccent: string;
   contactLinks: { email: string; github: string; linkedin: string };
   projectRole: string;
-  projectLinks: { web: string; 'google-play': string; 'app-store': string };
+  projectLinks: { web: string; 'google-play': string; 'app-store': string; source: string };
   builtWith: string;
   lastUpdated: string;
   /** Blog listesinin adresi, sonda "/" ile */
@@ -85,7 +85,7 @@ export const ui: Record<Lang, UI> = {
     contactAccent: 'Konuşalım.',
     contactLinks: { email: 'E-posta', github: 'GitHub', linkedin: 'LinkedIn' },
     projectRole: 'Rolüm',
-    projectLinks: { web: 'Web sitesi', 'google-play': 'Google Play', 'app-store': 'App Store' },
+    projectLinks: { web: 'Web sitesi', 'google-play': 'Google Play', 'app-store': 'App Store', source: 'Kaynak kod (GitHub)' },
     builtWith: 'Astro ile yazıldı · Vercel’de yayında',
     lastUpdated: 'Son güncelleme',
     blogPath: '/yazilar/',
@@ -136,7 +136,7 @@ export const ui: Record<Lang, UI> = {
     contactAccent: 'Let’s talk.',
     contactLinks: { email: 'Email', github: 'GitHub', linkedin: 'LinkedIn' },
     projectRole: 'My role',
-    projectLinks: { web: 'Website', 'google-play': 'Google Play', 'app-store': 'App Store' },
+    projectLinks: { web: 'Website', 'google-play': 'Google Play', 'app-store': 'App Store', source: 'Source code (GitHub)' },
     builtWith: 'Built with Astro · Hosted on Vercel',
     lastUpdated: 'Last updated',
     blogPath: '/en/writing/',

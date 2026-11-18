@@ -27,7 +27,8 @@ export interface Experience {
   highlights?: Localized<string[]>;
 }
 
-export type ProjectLinkType = 'web' | 'google-play' | 'app-store';
+/** 'source': herkese açık kaynak kod deposu (yalnızca public repo; özel repo linki girmez) */
+export type ProjectLinkType = 'web' | 'google-play' | 'app-store' | 'source';
 
 export interface ProjectLink {
   type: ProjectLinkType;
@@ -326,6 +327,22 @@ export const cv: CV = {
       },
       icon: nakliyekoopIcon,
     },
+    {
+      name: 'SeatFlow',
+      category: { tr: 'Mikroservis · Açık kaynak', en: 'Microservices · Open source' },
+      description: {
+        tr: 'Etkinlik biletleri için olay tabanlı koltuk rezervasyon sistemi: koltuk tutma, ödeme ve e-postayla bilet. İstekler yarıştığında, mesajlar tekrar teslim edildiğinde ya da ödeme geç geldiğinde bile aynı koltuğu iki kez satmayan, iki kez ücret almayan ve mesaj kaybetmeyen bir mikroservis mimarisi.',
+        en: 'Event-driven seat reservation system for event tickets: hold seats, pay and get the tickets by email. A microservice architecture that never sells a seat twice, never charges twice and never loses a message, even when requests race, messages are redelivered or a payment arrives late.',
+      },
+      role: {
+        tr: 'Kendi açık kaynak projem. .NET 10 ile Catalog, Booking ve Payment servisleri, Python (FastAPI) ile Notification servisi ve YARP API gateway; RabbitMQ üzerinde transactional outbox, idempotent inbox ve dead-letter kuyrukları; telafi adımlı orkestrasyonlu saga; Redis’te Lua ile atomik koltuk kilidi; her servise ayrı PostgreSQL veritabanı; gateway’in imzaladığı RS256 JWT’nin JWKS ile doğrulanması; uçtan uca OpenTelemetry; Docker Compose ve kind üzerinde Kubernetes; Testcontainers ile entegrasyon testleri ve GitHub Actions CI.',
+        en: 'My own open-source project. Catalog, Booking and Payment services on .NET 10, a Notification service in Python (FastAPI) and a YARP API gateway; transactional outbox, idempotent inbox and dead-letter queues on RabbitMQ; an orchestrated saga with compensation; atomic seat locks in Redis with Lua; a separate PostgreSQL database per service; RS256 JWTs issued by the gateway and verified via JWKS; end-to-end OpenTelemetry; Docker Compose and Kubernetes on kind; integration tests with Testcontainers and CI on GitHub Actions.',
+      },
+      tech: ['.NET 10', 'EF Core', 'RabbitMQ', 'Redis', 'PostgreSQL', 'Python (FastAPI)', 'YARP', 'OpenTelemetry', 'Docker', 'Kubernetes', 'Testcontainers', 'GitHub Actions'],
+      links: [{ type: 'source', url: 'https://github.com/abdurrahmanyesilyurt/seatflow' }],
+      qr: { url: 'https://github.com/abdurrahmanyesilyurt/seatflow', label: { tr: 'Kaynak kodu aç', en: 'Open source code' } },
+      featured: true,
+    },
   ],
 
   // İlk grup geniş kart olarak en üstte görünür. core: true olanlar "ana odak" olarak vurgulanır.
@@ -341,9 +358,12 @@ export const cv: CV = {
         { label: 'Node.js', icon: 'nodedotjs' },
         { label: 'Prisma', icon: 'prisma' },
         { label: 'Socket.IO', icon: 'socketdotio' },
+        { label: 'RabbitMQ', icon: 'rabbitmq' },
         'Web API',
         'REST',
         'LINQ',
+        { tr: 'Mikroservis mimarisi', en: 'Microservice architecture' },
+        { tr: 'Outbox, saga ve idempotency desenleri', en: 'Outbox, saga and idempotency patterns' },
       ],
     },
     {
@@ -361,6 +381,7 @@ export const cv: CV = {
       name: { tr: 'Veritabanı', en: 'Databases' },
       items: [
         { label: 'PostgreSQL', icon: 'postgresql', core: true },
+        { label: 'Redis', icon: 'redis' },
         { tr: 'İlişkisel veri modelleme', en: 'Relational data modeling' },
         { tr: 'Sorgu optimizasyonu', en: 'Query optimization' },
         { tr: 'Migration yönetimi', en: 'Migration management' },
@@ -434,6 +455,8 @@ export const cv: CV = {
       name: { tr: 'Bulut ve DevOps', en: 'Cloud & DevOps' },
       items: [
         { label: 'Docker', icon: 'docker' },
+        { label: 'Kubernetes', icon: 'kubernetes' },
+        { label: 'OpenTelemetry', icon: 'opentelemetry' },
         { label: 'Nginx', icon: 'nginx' },
         { label: 'Ubuntu Server', icon: 'ubuntu' },
         { label: 'GitHub Actions (CI/CD)', icon: 'githubactions' },
@@ -451,6 +474,8 @@ export const cv: CV = {
         { label: 'GitHub', icon: 'github' },
         { label: 'pnpm', icon: 'pnpm' },
         { label: 'Vitest', icon: 'vitest' },
+        'xUnit',
+        'Testcontainers',
         { label: 'Swagger/OpenAPI', icon: 'swagger' },
         { label: 'Postman', icon: 'postman' },
         { label: 'Rider', icon: 'rider' },

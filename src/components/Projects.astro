@@ -31,7 +31,7 @@ const projects = cv.projects.map((project) => {
       href: link.url,
       label: link.label ? t(link.label, lang) : s.projectLinks[link.type],
       // Baskıda linkler tıklanamadığı için adresin kendisi yazılır
-      printText: link.type === 'web' ? displayUrl(link.url) : s.projectLinks[link.type],
+      printText: link.type === 'web' || link.type === 'source' ? displayUrl(link.url) : s.projectLinks[link.type],
     })),
   };
 });
