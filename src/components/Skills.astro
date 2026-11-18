@@ -1,5 +1,7 @@
 ---
 import Section from './Section.astro';
+import ExpandAll from './ExpandAll.astro';
+import ToggleIcon from './ToggleIcon.astro';
 import TechIcon from './TechIcon.astro';
 import { cv, t, toSkillItem } from '../data/cv';
 import { brandIcon } from '../lib/icons';
@@ -13,16 +15,31 @@ interface Props {
 const { lang, number } = Astro.props;
 const s = ui[lang];
 
-// İlk grup (Backend) iki sütunu kaplayan geniş kart olur
-const groups = cv.skills.map((group, index) => ({
-  name: t(group.name, lang),
-  index: String(index + 1).padStart(2, '0'),
-  wide: index === 0,
-  items: group.items.map((raw) => {
+// Gruplar kapalı kartlar olarak listelenir; kapalıyken logolardan kısa bir önizleme görünür
+// (önce ana odak olanlar). İlk grup (Backend) iki sütunu kaplar.
+const PREVIEW_ICONS = 6;
+const groups = cv.skills.map((group, index) => {
+  const items = group.items.map((raw) => {
     const item = toSkillItem(raw);
     return { label: t(item.label, lang), core: Boolean(item.core), icon: brandIcon(item.icon) };
-  }),
-}));
+  });
+  const withIcon = [...items.filter((item) => item.icon && item.core), ...items.filter((item) => item.icon && !item.core)];
+  // Aynı logoyu paylaşanlar (.NET, ASP.NET Core, EF Core…) önizlemede bir kez görünür
+  const previewIcons = withIcon
+    .filter((item, i) => withIcon.findIndex((other) => other.icon?.path === item.icon?.path) === i)
+    .slice(0, PREVIEW_ICONS);
+  // Logosu olmayan gruplarda önizleme yazıyla verilir
+  const previewText = previewIcons.length === 0 ? items.slice(0, 3).map((item) => item.label) : [];
+  return {
+    name: t(group.name, lang),
+    index: String(index + 1).padStart(2, '0'),
+    wide: index === 0,
+    items,
+    previewIcons,
+    previewText,
+    more: items.length - (previewIcons.length || previewText.length),
+  };
+});
 
 const hasCore = groups.some((group) => group.items.some((item) => item.core));
 ---
@@ -39,45 +56,62 @@ const hasCore = groups.some((group) => group.items.some((item) => item.core));
       </p>
     )
   }
+  <ExpandAll slot="header-extra" lang={lang} />
 
-  <!-- Baskıda gri "gap" zemini kullanılmaz: sayfa sonunda boş kalan hücre gri blok gibi görünür -->
-  <ul
-    class="grid gap-px overflow-hidden rounded-2xl border border-rule bg-rule md:grid-cols-2 print:grid-cols-2 print:gap-x-6 print:gap-y-0 print:overflow-visible print:rounded-none print:border-0 print:bg-transparent"
-  >
+  <ul class="grid items-start gap-3 md:grid-cols-2 print:grid-cols-2 print:gap-x-6 print:gap-y-0">
     {
       groups.map((group) => (
-        <li
-          class:list={[
-            'scroll-reveal print-break-avoid flex flex-col gap-5 bg-paper p-6 sm:p-7 print:gap-1.5 print:border-b print:border-rule print:px-0 print:py-2',
-            group.wide && 'md:col-span-2 print:col-span-2',
-          ]}
-        >
-          <div class="flex items-baseline justify-between gap-4">
-            <h3 class="flex items-baseline gap-3">
-              <span class="font-mono text-[11px] text-ink-3">{group.index}</span>
-              <span class="font-serif text-[1.625rem] leading-none print:text-base">{group.name}</span>
-            </h3>
-            <span class="font-mono text-[11px] text-ink-3" aria-hidden="true">
-              {group.items.length}
-            </span>
-          </div>
+        <li class:list={['scroll-reveal print-break-avoid', group.wide && 'md:col-span-2 print:col-span-2']}>
+          <details
+            data-expandable
+            class="group rounded-2xl border border-rule bg-paper transition-colors open:border-ink/30 hover:border-ink/40 print:rounded-none print:border-0 print:border-b print:border-rule"
+          >
+            <summary class="group/summary grid cursor-pointer list-none grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 px-5 py-4 sm:px-6 sm:py-5 [&::-webkit-details-marker]:hidden print:px-0 print:py-2">
+              <h3 class="col-start-1 row-start-1 flex items-baseline gap-3">
+                <span class="font-mono text-[11px] text-ink-3">{group.index}</span>
+                <span class="font-serif text-2xl leading-none transition-colors group-hover/summary:text-accent print:text-base">
+                  {group.name}
+                </span>
+                <span class="font-mono text-[11px] text-ink-3" aria-hidden="true">
+                  {group.items.length}
+                </span>
+              </h3>
+              <ToggleIcon class="col-start-2 row-start-1" />
 
-          <ul class="flex flex-wrap gap-2 print:gap-x-3 print:gap-y-1">
-            {group.items.map((item) => (
-              <li
-                class:list={[
-                  'inline-flex items-center gap-2 rounded-full border py-1 pr-3.5 text-[14px] leading-6 transition-colors print:border-0 print:bg-transparent print:p-0 print:text-[10px] print:leading-4',
-                  item.icon ? 'pl-1' : 'pl-3.5',
-                  item.core
-                    ? 'border-accent bg-accent/10 font-medium text-ink'
-                    : 'border-rule text-ink-2 hover:border-ink hover:text-ink',
-                ]}
-              >
-                {item.icon && <TechIcon icon={item.icon} class="size-6 shrink-0 print:size-3" />}
-                {item.label}
-              </li>
-            ))}
-          </ul>
+              {/* Kapalıyken önizleme; açılınca tam liste görünür */}
+              <span aria-hidden="true" class="col-start-1 row-start-2 flex items-center gap-2.5 group-open:hidden print:hidden">
+                {group.previewIcons.length > 0 ? (
+                  <span class="flex -space-x-1.5">
+                    {group.previewIcons.map((item) => (
+                      <span class:list={['rounded-full ring-2', item.core ? 'ring-accent' : 'ring-paper']}>
+                        {item.icon && <TechIcon icon={item.icon} class="block size-6" />}
+                      </span>
+                    ))}
+                  </span>
+                ) : (
+                  <span class="text-[14px] text-ink-2">{group.previewText.join(' · ')}</span>
+                )}
+                {group.more > 0 && <span class="font-mono text-[11px] text-ink-3">+{group.more}</span>}
+              </span>
+            </summary>
+
+            <ul class="flex flex-wrap gap-2 px-5 pb-6 sm:px-6 print:gap-x-3 print:gap-y-1 print:px-0 print:pb-2">
+              {group.items.map((item) => (
+                <li
+                  class:list={[
+                    'inline-flex items-center gap-2 rounded-full border py-1 pr-3.5 text-[14px] leading-6 transition-colors print:border-0 print:bg-transparent print:p-0 print:text-[10px] print:leading-4',
+                    item.icon ? 'pl-1' : 'pl-3.5',
+                    item.core
+                      ? 'border-accent bg-accent/10 font-medium text-ink'
+                      : 'border-rule text-ink-2 hover:border-ink hover:text-ink',
+                  ]}
+                >
+                  {item.icon && <TechIcon icon={item.icon} class="size-6 shrink-0 print:size-3" />}
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+          </details>
         </li>
       ))
     }

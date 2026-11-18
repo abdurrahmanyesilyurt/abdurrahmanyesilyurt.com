@@ -1,0 +1,22 @@
+---
+// Bölüm başlığının altındaki "Tümünü aç / kapat" düğmesi. public/site.js, düğmenin bulunduğu
+// <section> içindeki details[data-expandable] kartlarını açıp kapatır ve yazıyı günceller.
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const s = ui[Astro.props.lang];
+---
+
+<button
+  type="button"
+  data-expand-all
+  data-label-open={s.expandAll}
+  data-label-close={s.collapseAll}
+  aria-expanded="false"
+  class="mt-5 block cursor-pointer font-mono text-[11px] tracking-[0.12em] text-ink-2 uppercase underline decoration-rule underline-offset-4 transition-colors hover:text-ink hover:decoration-ink print:hidden"
+>
+  {s.expandAll}
+</button>

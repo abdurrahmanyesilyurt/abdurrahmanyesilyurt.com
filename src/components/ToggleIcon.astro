@@ -1,0 +1,19 @@
+---
+// Açılır kartların "+" işareti: kart açıkken 45° dönüp "×" olur. Bulunduğu <details> "group",
+// <summary> "group/summary" sınıfını taşımalı. Grid yerleşimi class ile verilir.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<span
+  aria-hidden="true"
+  class:list={[
+    'grid size-8 shrink-0 place-items-center rounded-full border border-rule text-lg leading-none text-ink-2 transition group-open:rotate-45 group-hover/summary:border-ink group-hover/summary:text-ink print:hidden',
+    className,
+  ]}
+>
+  +
+</span>
