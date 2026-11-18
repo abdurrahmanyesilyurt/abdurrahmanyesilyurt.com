@@ -343,6 +343,22 @@ export const cv: CV = {
       qr: { url: 'https://github.com/abdurrahmanyesilyurt/seatflow', label: { tr: 'Kaynak kodu aç', en: 'Open source code' } },
       featured: true,
     },
+    {
+      name: 'Tersane Entegrasyon',
+      category: { tr: 'ERP entegrasyonu · Açık kaynak demo', en: 'ERP integration · Open-source demo' },
+      description: {
+        tr: 'Tersane senaryosunda iç uygulama ve ERP entegrasyonu: iş emri, malzeme talebi ve stok ekranları; talepleri ERP’ye satın alma talebi olarak gönderen, stok ve onay durumlarını geri çeken entegrasyon servisi ve Excel’deki irsaliyeleri eski bir web formuna giren RPA botu. ERP, IFS Cloud’un OData projection tarzını taklit eden sahte (mock) bir servistir; gerçek şirket verisi kullanılmaz.',
+        en: 'Internal app and ERP integration in a shipyard scenario: work order, material request and stock screens; an integration service that sends requests to the ERP as purchase requisitions and pulls stock and approval states back; and an RPA bot that enters delivery notes from Excel into a legacy web form. The ERP is a mock service that imitates the IFS Cloud OData projection style; no real company data is used.',
+      },
+      role: {
+        tr: 'Kendi açık kaynak demo projem. ASP.NET Core MVC (Razor, jQuery) arayüzü; SQL Server 2022 üzerinde EF Core ile birlikte T-SQL saklı yordamlar, view’ler, TVF ve TVP ile MERGE; transactional outbox, READPAST ile paralel çalışmaya güvenli kuyruk ve üç katmanlı idempotency; Polly ile retry, circuit breaker ve timeout, hata alan mesajın arayüzden yeniden işlenmesi; watermark ile delta senkron ve OAuth2 client credentials; Playwright for .NET ve ClosedXML ile RPA botu; aynı kuyruk mantığını Oracle’da kuran bir PL/SQL paketi; React izleme paneli; xUnit ve Testcontainers ile 36 test, Docker Compose ve GitHub Actions CI.',
+        en: 'My own open-source demo project. An ASP.NET Core MVC UI (Razor, jQuery); EF Core plus T-SQL stored procedures, views, a TVF and TVP-based MERGE on SQL Server 2022; a transactional outbox with a READPAST-based parallel-safe queue and three-layer idempotency; Polly retry, circuit breaker and timeouts, with failed messages requeued from the UI; watermark-based delta sync and OAuth2 client credentials; an RPA bot built with Playwright for .NET and ClosedXML; a PL/SQL package that implements the same queue logic on Oracle; a React monitoring panel; 36 tests with xUnit and Testcontainers, Docker Compose and GitHub Actions CI.',
+      },
+      tech: ['.NET 10', 'ASP.NET Core MVC', 'EF Core', 'SQL Server (T-SQL)', 'jQuery', 'Polly', 'OData', 'Playwright', 'Oracle PL/SQL', 'React', 'Testcontainers', 'Docker', 'GitHub Actions'],
+      links: [{ type: 'source', url: 'https://github.com/abdurrahmanyesilyurt/tersane-entegrasyon' }],
+      qr: { url: 'https://github.com/abdurrahmanyesilyurt/tersane-entegrasyon', label: { tr: 'Kaynak kodu aç', en: 'Open source code' } },
+      featured: true,
+    },
   ],
 
   // İlk grup geniş kart olarak en üstte görünür. core: true olanlar "ana odak" olarak vurgulanır.
@@ -354,11 +370,13 @@ export const cv: CV = {
         { label: '.NET 8', icon: 'dotnet', core: true },
         { label: 'Entity Framework Core', icon: 'dotnet', core: true },
         { label: 'SignalR', icon: 'dotnet' },
+        { label: 'ASP.NET Core MVC (Razor)', icon: 'dotnet' },
         { label: 'NestJS', icon: 'nestjs' },
         { label: 'Node.js', icon: 'nodedotjs' },
         { label: 'Prisma', icon: 'prisma' },
         { label: 'Socket.IO', icon: 'socketdotio' },
         { label: 'RabbitMQ', icon: 'rabbitmq' },
+        'Polly (retry, circuit breaker)',
         'Web API',
         'REST',
         'LINQ',
@@ -382,6 +400,9 @@ export const cv: CV = {
       items: [
         { label: 'PostgreSQL', icon: 'postgresql', core: true },
         { label: 'Redis', icon: 'redis' },
+        'SQL Server',
+        { tr: 'T-SQL (saklı yordam, MERGE)', en: 'T-SQL (procedures, MERGE)' },
+        { tr: 'Oracle PL/SQL (temel)', en: 'Oracle PL/SQL (basics)' },
         { tr: 'İlişkisel veri modelleme', en: 'Relational data modeling' },
         { tr: 'Sorgu optimizasyonu', en: 'Query optimization' },
         { tr: 'Migration yönetimi', en: 'Migration management' },
@@ -395,6 +416,7 @@ export const cv: CV = {
         { label: 'TypeScript', icon: 'typescript' },
         { label: 'TanStack Query', icon: 'reactquery' },
         { label: 'Tailwind CSS', icon: 'tailwindcss' },
+        { label: 'jQuery', icon: 'jquery' },
         { label: 'Astro', icon: 'astro' },
         { label: 'HTML', icon: 'html5' },
         { label: 'CSS', icon: 'css' },
@@ -440,6 +462,7 @@ export const cv: CV = {
     {
       name: { tr: 'Entegrasyonlar', en: 'Integrations' },
       items: [
+        'OData',
         { label: 'Gmail API', icon: 'gmail' },
         { label: 'Google Calendar API', icon: 'googlecalendar' },
         'Microsoft Graph',
@@ -476,6 +499,7 @@ export const cv: CV = {
         { label: 'Vitest', icon: 'vitest' },
         'xUnit',
         'Testcontainers',
+        { tr: 'Playwright ile RPA (tarayıcı otomasyonu)', en: 'RPA with Playwright (browser automation)' },
         { label: 'Swagger/OpenAPI', icon: 'swagger' },
         { label: 'Postman', icon: 'postman' },
         { label: 'Rider', icon: 'rider' },
@@ -488,6 +512,7 @@ export const cv: CV = {
       items: [
         { tr: 'QuestPDF (PDF üretimi)', en: 'QuestPDF (PDF generation)' },
         { tr: 'NCalc (formül motoru)', en: 'NCalc (formula engine)' },
+        { tr: 'ClosedXML (Excel okuma/yazma)', en: 'ClosedXML (Excel read/write)' },
         { label: { tr: 'Python ile veri işleme', en: 'Python for data processing' }, icon: 'python' },
         { label: { tr: 'Bluetooth Low Energy entegrasyonu', en: 'Bluetooth Low Energy integration' }, icon: 'bluetooth' },
       ],
