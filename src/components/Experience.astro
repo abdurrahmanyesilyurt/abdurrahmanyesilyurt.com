@@ -7,10 +7,9 @@ import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
-  number: string;
 }
 
-const { lang, number } = Astro.props;
+const { lang } = Astro.props;
 const s = ui[lang];
 
 // Kısa kartlar baskıda iki sayfaya bölünmesin; çok uzun olanın bölünmesine izin ver.
@@ -29,7 +28,7 @@ const headerGrid =
 const contentCell = 'col-start-1 sm:col-start-2 print:col-start-2';
 ---
 
-<Section id={s.sections.experience.id} number={number} title={s.sections.experience.label}>
+<Section id={s.sections.experience.id} title={s.sections.experience.label}>
   {hasDetails && <ExpandAll slot="header-extra" lang={lang} />}
 
   <ol class="divide-y divide-rule">

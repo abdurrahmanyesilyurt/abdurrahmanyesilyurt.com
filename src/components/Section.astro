@@ -1,30 +1,59 @@
 ---
+// Ana sayfa bölümü. Başlık bir düğmedir: tıklayınca bölümün içeriği kapanıp açılır (public/site.js).
+// Bölümler açık başlar; kapalı bir bölüme link ya da 3D sahneden gidilince kendiliğinden açılır.
+// Baskıda her bölüm açıktır.
 interface Props {
   id: string;
-  number: string;
   title: string;
   /** Baskıda bölümü iki sayfaya bölme (kısa bölümler için) */
   keepTogether?: boolean;
 }
 
-const { id, number, title, keepTogether = false } = Astro.props;
+const { id, title, keepTogether = false } = Astro.props;
+const bodyId = `${id}-body`;
 ---
 
 <section
   id={id}
+  data-section
   class:list={[
-    'grid scroll-mt-20 gap-x-10 gap-y-8 border-t border-rule py-16 sm:py-20 lg:grid-cols-12 print:grid-cols-12 print:gap-x-6 print:py-3',
+    'group/section grid scroll-mt-20 gap-x-10 gap-y-8 border-t border-rule py-16 sm:py-20 lg:grid-cols-12 print:grid-cols-12 print:gap-x-6 print:py-3',
     keepTogether && 'print-break-avoid',
   ]}
 >
   <header class="lg:col-span-3 print:col-span-3">
     <div class="lg:sticky lg:top-28 print:static">
-      <p class="font-mono text-xs font-medium text-accent">{number}</p>
-      <h2 class="mt-2 font-serif text-4xl leading-none sm:text-5xl print:text-3xl">{title}</h2>
-      <slot name="header-extra" />
+      <h2 class="font-serif text-4xl leading-none sm:text-5xl print:text-3xl">
+        <button
+          type="button"
+          data-section-toggle
+          aria-expanded="true"
+          aria-controls={bodyId}
+          class="group/toggle inline-flex cursor-pointer items-center gap-3 text-left transition-colors hover:text-accent"
+        >
+          {title}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-6 shrink-0 text-ink-3 transition-transform duration-300 group-hover/toggle:text-accent group-aria-[expanded=false]/toggle:-rotate-90 print:hidden"
+          >
+            <path d="m6 9 6 6 6-6"></path>
+          </svg>
+        </button>
+      </h2>
+      <div class="group-[.is-collapsed]/section:hidden">
+        <slot name="header-extra" />
+      </div>
     </div>
   </header>
-  <div class="lg:col-span-9 print:col-span-9">
-    <slot />
+  <div id={bodyId} data-section-body class="section-body lg:col-span-9 print:col-span-9">
+    <div class="section-body-inner">
+      <slot />
+    </div>
   </div>
 </section>

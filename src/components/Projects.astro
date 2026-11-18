@@ -10,10 +10,9 @@ import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
-  number: string;
 }
 
-const { lang, number } = Astro.props;
+const { lang } = Astro.props;
 const s = ui[lang];
 const locale = lang === 'tr' ? 'tr-TR' : 'en-US';
 
@@ -45,7 +44,7 @@ const projects = cv.projects.map((project) => ({
 }));
 ---
 
-<Section id={s.sections.projects.id} number={number} title={s.sections.projects.label}>
+<Section id={s.sections.projects.id} title={s.sections.projects.label}>
   <ExpandAll slot="header-extra" lang={lang} />
 
   <ul class="grid items-start gap-3 sm:grid-cols-2 print:grid-cols-2 print:gap-x-6 print:gap-y-0">

@@ -255,6 +255,48 @@ body::before {
   transform: none;
 }
 
+/*
+ * Kapanıp açılan ana bölümler (Section.astro + public/site.js). İçerik 1fr ↔ 0fr satır yüksekliğiyle
+ * kayarak kapanır; kapalıyken bölüm yalnızca başlık kadar yer kaplar.
+ */
+.section-body {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.section-body-inner {
+  min-height: 0;
+}
+
+[data-section].is-collapsed {
+  row-gap: 0;
+  padding-block: 2rem;
+}
+
+[data-section].is-collapsed .section-body {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+[data-section].is-collapsed .section-body-inner,
+[data-section].is-animating .section-body-inner {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-section] {
+    transition:
+      padding-block 0.45s cubic-bezier(0.2, 0.7, 0.1, 1),
+      row-gap 0.45s cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+
+  .section-body {
+    transition:
+      grid-template-rows 0.45s cubic-bezier(0.2, 0.7, 0.1, 1),
+      opacity 0.3s ease;
+  }
+}
+
 /* Blog yazıları: Tailwind Typography renkleri sitenin tonlarına bağlanır */
 .prose-cv {
   --tw-prose-body: var(--ink-2);
@@ -501,6 +543,20 @@ body::before {
 
   .print-break-avoid {
     break-inside: avoid;
+  }
+
+  /* Kapatılmış bölümler de basılsın (site.js "beforeprint"te zaten açar; bu yedek) */
+  [data-section].is-collapsed {
+    padding-block: 0.75rem !important;
+  }
+
+  [data-section].is-collapsed .section-body {
+    grid-template-rows: 1fr !important;
+    opacity: 1 !important;
+  }
+
+  .section-body-inner {
+    overflow: visible !important;
   }
 
   /* Efekt kartları kâğıtta düz kalsın */

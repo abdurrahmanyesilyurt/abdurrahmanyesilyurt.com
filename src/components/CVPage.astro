@@ -32,7 +32,6 @@ const hasContent: Record<SectionKey, boolean> = {
   contact: true,
 };
 const visible = sectionKeys.filter((key) => hasContent[key]);
-const number = (key: SectionKey) => String(visible.indexOf(key) + 1).padStart(2, '0');
 const nav = visible.map((key) => ({ href: `#${s.sections[key].id}`, label: s.sections[key].label }));
 
 const alternates = (Object.keys(languages) as Lang[]).map((code) => ({ lang: code, href: getRelativeLocaleUrl(code) }));
@@ -58,12 +57,12 @@ const jsonLd = {
   <Header lang={lang} nav={nav} />
   <main id="main" class="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12 print:max-w-none print:px-0">
     <Hero lang={lang} />
-    {hasContent.experience && <Experience lang={lang} number={number('experience')} />}
-    {hasContent.projects && <Projects lang={lang} number={number('projects')} />}
-    {hasContent.skills && <Skills lang={lang} number={number('skills')} />}
-    {hasContent.education && <Education lang={lang} number={number('education')} />}
-    {hasContent.writing && <Writing lang={lang} number={number('writing')} posts={posts} />}
-    <Contact lang={lang} number={number('contact')} />
+    {hasContent.experience && <Experience lang={lang} />}
+    {hasContent.projects && <Projects lang={lang} />}
+    {hasContent.skills && <Skills lang={lang} />}
+    {hasContent.education && <Education lang={lang} />}
+    {hasContent.writing && <Writing lang={lang} posts={posts} />}
+    <Contact lang={lang} />
   </main>
   <Footer lang={lang} />
 </Base>
