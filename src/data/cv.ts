@@ -237,17 +237,21 @@ export const cv: CV = {
     {
       name: 'Ecoasistan',
       category: { tr: 'Yapay zekâ · Verimlilik', en: 'AI · Productivity' },
-      platforms: ['Web'],
+      platforms: ['Web', 'iOS', 'Android'],
       description: {
         tr: 'Gmail ve Google Takvim’i okuyup randevuları, görevleri ve son tarihleri tek bir günlük akışta toplayan yapay zekâ destekli asistan: takvim önerileri, üç tonda yanıt taslakları, asistan sohbeti ve günün özeti bildirimi. Takvime yazma ve mail gönderme yalnızca kullanıcı onayıyla yapılır.',
         en: 'AI-powered assistant that reads Gmail and Google Calendar and gathers appointments, tasks and deadlines into a single daily feed: calendar suggestions, reply drafts in three tones, an assistant chat and a daily summary notification. Writing to the calendar or sending email only happens with the user’s approval.',
       },
       role: {
-        tr: 'Kendi ürünüm. pnpm monorepo mimarisi (NestJS + Prisma API, Next.js web, yayına hazırlanan Expo mobil uygulaması); Claude API ile sınıflandırma → çıkarım hattı (Zod şema doğrulaması, dayanak cümlesi kontrolü, prompt injection’a karşı araçsız model); modelden önce çalışan kural tabanlı ayrıştırıcılar; Gmail, Takvim ve Outlook entegrasyonları; KVKK uyumu ve Docker + GitHub Actions ile otomatik deploy.',
-        en: 'My own product. The pnpm monorepo architecture (NestJS + Prisma API, Next.js web app, an upcoming Expo mobile app); a classification → extraction pipeline on the Claude API (Zod schema validation, source-quote checks, a tool-less model against prompt injection); rule-based parsers that run before the model; Gmail, Calendar and Outlook integrations; KVKK compliance and automated deploys with Docker and GitHub Actions.',
+        tr: 'Kendi ürünüm. pnpm monorepo mimarisi (NestJS + Prisma API, Next.js web, App Store ve Google Play’de yayında olan Expo mobil uygulaması); Claude API ile sınıflandırma → çıkarım hattı (Zod şema doğrulaması, dayanak cümlesi kontrolü, prompt injection’a karşı araçsız model); modelden önce çalışan kural tabanlı ayrıştırıcılar; Gmail, Takvim ve Outlook entegrasyonları; KVKK uyumu ve Docker + GitHub Actions ile otomatik deploy.',
+        en: 'My own product. The pnpm monorepo architecture (NestJS + Prisma API, Next.js web app, an Expo mobile app live on the App Store and Google Play); a classification → extraction pipeline on the Claude API (Zod schema validation, source-quote checks, a tool-less model against prompt injection); rule-based parsers that run before the model; Gmail, Calendar and Outlook integrations; KVKK compliance and automated deploys with Docker and GitHub Actions.',
       },
       tech: ['NestJS', 'Prisma', 'PostgreSQL', 'Claude API', 'Zod', 'Next.js 16', 'React Native (Expo)', 'Docker', 'GitHub Actions'],
-      links: [{ type: 'web', url: 'https://ecoasistan.com' }],
+      links: [
+        { type: 'web', url: 'https://ecoasistan.com' },
+        { type: 'app-store', url: 'https://apps.apple.com/tr/app/ecoasistan/id6818830130' },
+        { type: 'google-play', url: 'https://play.google.com/store/apps/details?id=com.ecoasistan.app' },
+      ],
       qr: { url: 'https://ecoasistan.com', label: { tr: 'Siteyi aç', en: 'Open site' } },
       icon: ecoasistanIcon,
       featured: true,
