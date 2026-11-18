@@ -534,6 +534,11 @@ export const cv: CV = {
 
   certifications: [
     {
+      name: 'Claude Code in Action',
+      issuer: 'Anthropic (Claude Academy)',
+      date: '2026-11',
+    },
+    {
       name: { tr: 'İngilizce C2', en: 'English C2' },
       issuer: { tr: 'Amerikan Kültür Yabancı Dil Kursları', en: 'American Culture Language Schools' },
     },
