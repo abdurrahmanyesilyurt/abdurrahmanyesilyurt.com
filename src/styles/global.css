@@ -228,13 +228,18 @@ body::before {
     mask-image: radial-gradient(ellipse 58% 56% at 50% 50%, #000 62%, transparent 100%);
   }
 
-  /* Soyadındaki mavi → mor → pembe geçiş */
+  /*
+   * Soyadındaki mavi → mor → pembe geçiş. background-clip: text yalnızca kutunun içini boyar; "ş"
+   * çengeli ve "y" kuyruğu satır kutusunun altına taştığı için alttan (ve italik eğim için sağdan)
+   * pay verilir, eksi margin satır aralığını değiştirmez.
+   */
   .text-gradient {
     background-image: linear-gradient(100deg, var(--hue-1), var(--hue-4) 48%, var(--hue-6));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    padding-right: 0.08em;
+    padding: 0 0.1em 0.28em 0;
+    margin-bottom: -0.28em;
   }
 }
 
@@ -425,12 +430,12 @@ body::before {
   }
 }
 
-/* Hero'daki isim satırları alttan kayarak gelir */
+/* Hero'daki isim satırları alttan kayarak gelir; alt pay, aşağı sarkan harfler (ş, y) kesilmesin diye */
 .hero-line {
   display: block;
   overflow: hidden;
-  padding-bottom: 0.14em;
-  margin-bottom: -0.14em;
+  padding-bottom: 0.3em;
+  margin-bottom: -0.3em;
 }
 
 .hero-line > span {
