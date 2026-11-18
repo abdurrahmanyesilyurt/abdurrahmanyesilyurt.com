@@ -544,6 +544,11 @@ export const cv: CV = {
       date: '2026-11',
     },
     {
+      name: 'Claude Platform 101',
+      issuer: 'Anthropic (Claude Academy)',
+      date: '2026-11',
+    },
+    {
       name: { tr: 'İngilizce C2', en: 'English C2' },
       issuer: { tr: 'Amerikan Kültür Yabancı Dil Kursları', en: 'American Culture Language Schools' },
     },
