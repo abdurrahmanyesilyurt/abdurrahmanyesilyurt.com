@@ -115,11 +115,11 @@ export const cv: CV = {
     en: 'Backend & Full-Stack Software Developer',
   },
   summary: {
-    tr: 'ASP.NET Core, NestJS ve PostgreSQL ile backend sistemler; Next.js ve React Native (Expo) ile web ve mobil istemciler geliştiren bir bilgisayar mühendisiyim. Farklı sektörlerden firmalar için geliştirdiğim ürünler web’de, App Store’da ve Google Play’de canlıda; son olarak Claude API ile e-postalardan randevu, görev ve son tarih çıkaran yapay zekâ destekli asistan ürünüm Ecoasistan’ı yayına aldım. API ve veritabanı tasarımından kimlik doğrulama, bulut dağıtımı ve CI/CD otomasyonuna kadar uçtan uca sorumluluk alırım.',
-    en: 'Computer engineer building backend systems with ASP.NET Core, NestJS and PostgreSQL, and web and mobile clients with Next.js and React Native (Expo). Products I have built for companies across several industries are live on the web, the App Store and Google Play; most recently I launched Ecoasistan, my own AI-powered assistant that uses the Claude API to extract appointments, tasks and deadlines from email. I take end-to-end ownership, from API and database design to authentication, cloud deployment and CI/CD automation.',
+    tr: 'ASP.NET Core, NestJS ve PostgreSQL ile backend sistemler; Next.js ve React Native (Expo) ile web ve mobil istemciler geliştiren bir bilgisayar mühendisiyim. Farklı sektörlerden firmalar için geliştirdiğim ürünler web’de, App Store’da ve Google Play’de canlıda. Canlıda çalışan yapay zekâ özellikleri geliştiriyorum: EcoYazılım platformu için araç kullanan ve yazma işlemlerini kullanıcı onayıyla yapan bir LLM ajanı (Anthropic Claude) ve Claude API ile e-postalardan randevu, görev ve son tarih çıkaran kendi ürünüm Ecoasistan. Günlük geliştirmede Claude Code kullanır, ürettiği kodu inceleme ve testle doğrularım. API ve veritabanı tasarımından kimlik doğrulama, bulut dağıtımı ve CI/CD otomasyonuna kadar uçtan uca sorumluluk alırım.',
+    en: 'Computer engineer building backend systems with ASP.NET Core, NestJS and PostgreSQL, and web and mobile clients with Next.js and React Native (Expo). Products I have built for companies across several industries are live on the web, the App Store and Google Play. I ship AI features to production: a tool-using LLM agent (Anthropic Claude) with user-approved writes inside the EcoYazılım platform, and Ecoasistan, my own product that uses the Claude API to extract appointments, tasks and deadlines from email. I use Claude Code every day and verify what it produces through review and tests. I take end-to-end ownership, from API and database design to authentication, cloud deployment and CI/CD automation.',
   },
   location: 'Kocaeli, Türkiye',
-  focus: ['.NET', 'PostgreSQL', 'Next.js', 'React Native'],
+  focus: ['.NET', 'PostgreSQL', 'Next.js', 'React Native', 'LLM Agents'],
   openToWork: true,
   militaryService: { tr: 'Tamamlandı', en: 'Completed' },
 
@@ -143,6 +143,7 @@ export const cv: CV = {
       highlights: {
         tr: [
           'Dijitalleşme ihtiyacı olan firmalar için uçtan uca ürünler tasarlayıp canlıya aldım (bkz. Projeler). ASP.NET Core 8 ve NestJS ile katmanlı Web API’lar geliştirdim; PostgreSQL şemalarını EF Core ve Prisma migration’larıyla yönetip sorgu performansını optimize ettim.',
+          'ASP.NET Core 8 ve Anthropic SDK ile platform içi yapay zekâ ajanı (Eco AI) geliştirdim: tüm API’yi kapsayan genel araçlarla araç kullanımı (tool use), paralel okuma, her yazma işleminde kullanıcı onayı, hızlı modelden gelişmiş modele yönlendirme, prompt önbelleğine uygun tasarım, 429/529 hatalarında anahtar havuzuyla yük devri, akışlı yanıtlar ve arka planda kalıcı tur yürütme.',
           'JWT ve HTTP-only cookie tabanlı kimlik doğrulama, refresh token rotasyonu ile token bağlama (IP, UserAgent) ve rol/izin bazlı çok kiracılı yetkilendirme kurguladım; SignalR/Socket.IO ile gerçek zamanlı güncellemeler, FCM/APNs ve Web Push bildirimleri, SMTP e-posta entegrasyonları geliştirdim.',
           'Ubuntu sunucularda Docker, Nginx reverse proxy ve SSL ile dağıtım yaptım; GitHub Actions ile test, imaj yayını, otomatik deploy, migration ve sağlık kontrolü içeren, başarısızlıkta önceki sürüme dönen CI/CD hatları kurdum.',
           'Next.js, React, TanStack Query ve Tailwind CSS ile web istemcileri; React Native (Expo) ile App Store ve Google Play’de yayında olan mobil uygulamalar geliştirdim, EAS ile OTA güncelleme akışı kurdum.',
@@ -150,6 +151,7 @@ export const cv: CV = {
         ],
         en: [
           'Designed and shipped end-to-end products for companies pursuing digital transformation (see Projects). Built layered Web APIs with ASP.NET Core 8 and NestJS; managed PostgreSQL schemas through EF Core and Prisma migrations and optimized query performance.',
+          'Built an in-platform AI agent (Eco AI) with ASP.NET Core 8 and the Anthropic SDK: tool use through generic tools that cover the whole API, parallel reads, user approval for every write, routing from a fast model to a stronger one, prompt-caching-friendly design, key-pool failover on 429/529, streamed responses and persistent background turns.',
           'Implemented JWT and HTTP-only cookie authentication, refresh token rotation with token binding (IP, UserAgent), and role/permission-based multi-tenant authorization; built real-time updates with SignalR/Socket.IO, FCM/APNs and Web Push notifications, and SMTP email integrations.',
           'Deployed on Ubuntu servers with Docker, Nginx reverse proxy and SSL; built GitHub Actions CI/CD pipelines covering tests, image publishing, automated deploys, migrations and health checks, with automatic rollback.',
           'Built web clients with Next.js, React, TanStack Query and Tailwind CSS, and React Native (Expo) mobile apps live on the App Store and Google Play; set up over-the-air updates with EAS.',
@@ -251,10 +253,10 @@ export const cv: CV = {
         en: 'Management platform for environmental and occupational-safety consultancies and their client companies: quote and contract approvals, periodic inspection reports, OHS and environmental consulting, an academy, document tracking and carbon report management — plus a mobile app for field teams.',
       },
       role: {
-        tr: 'Ekonaz ürünlerinin ortak ASP.NET Core 8 API’si (SignalR bildirimleri, QuestPDF ile QR doğrulamalı PDF raporlar, firma bazlı veri ayrımı ve yetkilendirme) ve Next.js web uygulaması; Expo mobil uygulamasında ekip içinde geliştirme; Docker ve GitHub Actions ile yayın.',
-        en: 'The shared ASP.NET Core 8 API behind the Ekonaz products (SignalR notifications, QR-verified PDF reports with QuestPDF, per-company data isolation and permissions) and the Next.js web app; team development on the Expo mobile app; releases with Docker and GitHub Actions.',
+        tr: 'Ekonaz ürünlerinin ortak ASP.NET Core 8 API’si (SignalR bildirimleri, QuestPDF ile QR doğrulamalı PDF raporlar, firma bazlı veri ayrımı ve yetkilendirme), platform içi yapay zekâ ajanı Eco AI (Claude, araç kullanımı, onaylı yazma, dosya okuma) ve Next.js web uygulaması; Expo mobil uygulamasında ekip içinde geliştirme; Docker ve GitHub Actions ile yayın.',
+        en: 'The shared ASP.NET Core 8 API behind the Ekonaz products (SignalR notifications, QR-verified PDF reports with QuestPDF, per-company data isolation and permissions), the in-platform AI agent Eco AI (Claude, tool use, approved writes, file reading) and the Next.js web app; team development on the Expo mobile app; releases with Docker and GitHub Actions.',
       },
-      tech: ['ASP.NET Core 8', 'PostgreSQL', 'SignalR', 'QuestPDF', 'Next.js 15', 'React Native (Expo)', 'Docker', 'GitHub Actions'],
+      tech: ['ASP.NET Core 8', 'PostgreSQL', 'SignalR', 'Anthropic SDK', 'QuestPDF', 'Next.js 15', 'React Native (Expo)', 'Docker', 'GitHub Actions'],
       links: [
         { type: 'web', url: 'https://www.ecoyazilim.com' },
         { type: 'app-store', url: 'https://apps.apple.com/tr/app/ecoyaz%C4%B1l%C4%B1m/id6780693355' },
@@ -388,11 +390,16 @@ export const cv: CV = {
     {
       name: { tr: 'Yapay Zekâ', en: 'AI' },
       items: [
-        { label: 'Claude API', icon: 'claude' },
-        { label: 'Zod', icon: 'zod' },
+        { label: 'Claude API', icon: 'claude', core: true },
+        { label: 'Anthropic SDK', icon: 'anthropic' },
+        { tr: 'LLM ajanları ve araç kullanımı (tool use)', en: 'LLM agents & tool use' },
+        { tr: 'İnsan onaylı (human-in-the-loop) işlemler', en: 'Human-in-the-loop approvals' },
         { tr: 'LLM ile yapılandırılmış veri çıkarımı', en: 'Structured data extraction with LLMs' },
+        { tr: 'Model yönlendirme ve prompt önbellekleme', en: 'Model routing & prompt caching' },
+        { label: 'Zod', icon: 'zod' },
         { tr: 'Prompt injection’a karşı tasarım', en: 'Prompt-injection-resistant design' },
         { tr: 'Model maliyeti takibi', en: 'Model cost tracking' },
+        { tr: 'Claude Code ile yapay zekâ destekli geliştirme', en: 'AI-assisted development (Claude Code)' },
       ],
     },
     {
