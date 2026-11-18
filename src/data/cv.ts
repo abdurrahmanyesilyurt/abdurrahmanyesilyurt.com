@@ -51,9 +51,9 @@ export interface Project {
   links?: ProjectLink[];
   /** QR kodun açacağı adres ve altındaki kısa yazı; boşsa QR gösterilmez */
   qr?: { url: string; label: Localized };
-  /** src/assets/projects altından import edilen ikon */
+  /** src/assets/projects altından import edilen ikon; yoksa addan kısaltma gösterilir ("SeatFlow" → "SF") */
   icon?: ImageMetadata;
-  /** Öne çıkan proje: iki sütunu kaplayan geniş kart olur */
+  /** Öne çıkan proje: kartı yeşil çerçeveyle vurgulanır */
   featured?: boolean;
 }
 

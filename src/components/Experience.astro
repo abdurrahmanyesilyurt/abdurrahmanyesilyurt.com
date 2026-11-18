@@ -1,5 +1,7 @@
 ---
 import Section from './Section.astro';
+import ExpandAll from './ExpandAll.astro';
+import ToggleIcon from './ToggleIcon.astro';
 import { cv, formatDate, t } from '../data/cv';
 import { ui, type Lang } from '../i18n/ui';
 
@@ -28,21 +30,7 @@ const contentCell = 'col-start-1 sm:col-start-2 print:col-start-2';
 ---
 
 <Section id={s.sections.experience.id} number={number} title={s.sections.experience.label}>
-  {
-    hasDetails && (
-      <button
-        slot="header-extra"
-        type="button"
-        data-expand-all
-        data-label-open={s.expandAll}
-        data-label-close={s.collapseAll}
-        aria-expanded="false"
-        class="mt-5 cursor-pointer font-mono text-[11px] tracking-[0.12em] text-ink-2 uppercase underline decoration-rule underline-offset-4 transition-colors hover:text-ink hover:decoration-ink print:hidden"
-      >
-        {s.expandAll}
-      </button>
-    )
-  }
+  {hasDetails && <ExpandAll slot="header-extra" lang={lang} />}
 
   <ol class="divide-y divide-rule">
     {
@@ -96,13 +84,7 @@ const contentCell = 'col-start-1 sm:col-start-2 print:col-start-2';
                   ]}
                 >
                   {header}
-                  {/* "+" açıkken 45° dönüp "×" olur */}
-                  <span
-                    aria-hidden="true"
-                    class="col-start-2 row-start-1 mt-1 grid size-8 place-items-center rounded-full border border-rule text-lg leading-none text-ink-2 transition group-open:rotate-45 group-hover/summary:border-ink group-hover/summary:text-ink sm:col-start-3 print:hidden"
-                  >
-                    +
-                  </span>
+                  <ToggleIcon class="col-start-2 row-start-1 mt-1 sm:col-start-3" />
                 </summary>
                 <div class="grid gap-x-8 sm:grid-cols-[10.5rem_1fr] print:grid-cols-[9rem_1fr]">
                   <ul class="space-y-2 pb-8 leading-relaxed text-ink-2 sm:col-start-2 print:col-start-2 print:space-y-0.5 print:pb-2 print:leading-snug">
