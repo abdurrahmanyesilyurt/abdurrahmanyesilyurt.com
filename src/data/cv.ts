@@ -12,6 +12,7 @@ import ecoyazilimIcon from '../assets/projects/ecoyazilim.png';
 import ekonazKarbonIcon from '../assets/projects/ekonaz-karbon.png';
 import nakliyekoopIcon from '../assets/projects/nakliyekoop.png';
 import sayveraIcon from '../assets/projects/sayveraglobal.png';
+import portrait from '../assets/portrait.webp';
 
 export type Localized<T = string> = T | { tr: T; en: T };
 
@@ -100,6 +101,8 @@ export interface CV {
   focus: string[];
   openToWork: boolean;
   militaryService?: Localized;
+  /** Hero'daki portre (4:5 dikey, düz zemin). Boşsa hero fotoğrafsız düzene geçer; baskıda gösterilmez. */
+  photo?: { src: ImageMetadata; alt: Localized };
   links: { email?: string; github?: string; linkedin?: string };
   experience: Experience[];
   projects: Project[];
@@ -123,6 +126,10 @@ export const cv: CV = {
   focus: ['.NET', 'PostgreSQL', 'Next.js', 'React Native', 'LLM Agents'],
   openToWork: true,
   militaryService: { tr: 'Tamamlandı', en: 'Completed' },
+  photo: {
+    src: portrait,
+    alt: { tr: 'Abdurrahman Yeşilyurt’un portresi', en: 'Portrait of Abdurrahman Yeşilyurt' },
+  },
 
   links: {
     email: 'abdurrahmanyesilyurt4141@gmail.com', // Sitede görünecek e-posta adresi (boşsa gösterilmez)
