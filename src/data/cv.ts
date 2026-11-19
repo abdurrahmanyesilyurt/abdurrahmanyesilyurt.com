@@ -11,7 +11,7 @@ import ecoasistanIcon from '../assets/projects/ecoasistan.png';
 import ecoyazilimIcon from '../assets/projects/ecoyazilim.png';
 import ekonazKarbonIcon from '../assets/projects/ekonaz-karbon.png';
 import nakliyekoopIcon from '../assets/projects/nakliyekoop.png';
-import sayveraIcon from '../assets/projects/sayveraglobal.png';
+import zenmiralIcon from '../assets/projects/zenmiral.png';
 import portrait from '../assets/portrait.webp';
 
 export type Localized<T = string> = T | { tr: T; en: T };
@@ -351,21 +351,21 @@ export const cv: CV = {
       icon: ekonazKarbonIcon,
     },
     {
-      name: 'Sayvera Global',
+      name: 'Zenmiral',
       category: { tr: 'E-ticaret · Doğrudan satış', en: 'E-commerce · Direct selling' },
       platforms: ['Web'],
       description: {
-        tr: 'Doğal sağlık ve bakım ürünleri için doğrudan satış e-ticaret platformu: üyelik ve referans sistemi, ekip ağacı ve aylık kazanç hesabı, satıcı pazaryeri ve kapsamlı yönetim paneli.',
-        en: 'Direct-selling e-commerce platform for natural health and care products: membership and referrals, a team tree with monthly earnings, a seller marketplace and an extensive admin panel.',
+        tr: 'Sağlıklı yaşam ve kozmetik ürünleri için doğrudan satış e-ticaret platformu (eski adıyla Sayvera Global): üyelik ve referans sistemi, ekip ağacı ve aylık kazanç hesabı, satıcı pazaryeri ve kapsamlı yönetim paneli.',
+        en: 'Direct-selling e-commerce platform for healthy-living and cosmetics products (formerly Sayvera Global): membership and referrals, a team tree with monthly earnings, a seller marketplace and an extensive admin panel.',
       },
       role: {
         tr: 'ASP.NET Core 8 backend’in büyük kısmı: katmanlı mimari, komisyon motoru (binary ağaç, kariyer seviyeleri), PayTR ödeme, e-fatura ve kargo entegrasyonları, zamanlanmış işler ve GitHub Actions ile yayın.',
         en: 'Most of the ASP.NET Core 8 backend: layered architecture, the commission engine (binary tree, career ranks), PayTR payments, e-invoice and shipping integrations, scheduled jobs and GitHub Actions deployment.',
       },
       tech: ['ASP.NET Core 8', 'EF Core', 'PostgreSQL', 'Identity + JWT', 'AWS S3', 'PayTR', 'GitHub Actions'],
-      links: [{ type: 'web', url: 'https://www.sayveraglobal.com' }],
-      qr: { url: 'https://www.sayveraglobal.com', label: { tr: 'Siteyi aç', en: 'Open site' } },
-      icon: sayveraIcon,
+      links: [{ type: 'web', url: 'https://www.zenmiral.com' }],
+      qr: { url: 'https://www.zenmiral.com', label: { tr: 'Siteyi aç', en: 'Open site' } },
+      icon: zenmiralIcon,
     },
     {
       name: 'NakliyeKoop',
